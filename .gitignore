@@ -49,3 +49,11 @@ Session.vim
 
 # Visual Studio
 .vs
+
+# Packages to self import from Market
+Content/AnimStarterPack/
+Content/Bicycle_With_Animations/
+Content/MilitaryWeapSilver/
+Content/Weapon_Pack/
+Content/CraftResourcesIcons/
+Plugins/Developer/RiderLink/
