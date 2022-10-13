@@ -59,7 +59,13 @@ bool UBasicItemContainer::AddItem(IItemHolder* previousOwner, UItem* item)
 
 bool UBasicItemContainer::RemoveItem(UItem* item)
 {
-	return ItemsHeld.Remove(item)>0;
+	if(ItemsHeld.Remove(item)>0)
+	{
+		OnInventoryUpdated.Broadcast(this);
+		return true;
+	}
+	
+	return false;
 }
 
 float UBasicItemContainer::GetWeightOfHeldItems()

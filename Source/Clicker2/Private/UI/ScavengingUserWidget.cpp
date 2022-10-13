@@ -24,7 +24,7 @@ void UScavengingUserWidget::RebuildItemHoldersList()
 
 	for (auto itemHolder : CurrentPickupComponent->GetOverlappedItemsContainers())
 	{
-		ItemHolders.Add(itemHolder);
+		ItemHolders.Add(itemHolder->_getUObject());
 	}
 }
 
@@ -67,21 +67,34 @@ void UScavengingUserWidget::RefreshButtons()
 	}
 }
 
+void UScavengingUserWidget::Show()
+{
+	Super::Show();
+}
+
+void UScavengingUserWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+	ButtonsPanel->ClearChildren();
+}
+
 void UScavengingUserWidget::Show(USearchForPickupColliderComponent* pickupComponent)
 {
-	if(CurrentPickupComponent != pickupComponent)
-		pickupComponent->GetOnItemHoldersChanged()->RemoveDynamic(this,&UScavengingUserWidget::OnOverlappedContainersChanged);
+	if(CurrentPickupComponent != nullptr)
+		CurrentPickupComponent->GetOnItemHoldersChanged()->RemoveDynamic(this,&UScavengingUserWidget::OnOverlappedContainersChanged);
 	
 	CurrentPickupComponent = pickupComponent;
 	CurrentWidgetIndex = 0;
 	RebuildItemHoldersList();
 	RefreshItemHolderWidget();
 	RefreshButtons();
-
+	
 	pickupComponent->GetOnItemHoldersChanged()->AddDynamic(this,&UScavengingUserWidget::OnOverlappedContainersChanged);
+	
+	Show();
 }
 
 void UScavengingUserWidget::RefreshItemHolderWidget()
 {
-	ItemHolderWidget->Setup(ItemHolders[CurrentWidgetIndex]);
+	ItemHolderWidget->Setup(ItemHolders[CurrentWidgetIndex].GetInterface());
 }

@@ -32,9 +32,8 @@ private:
 
 	UPROPERTY(Transient,NonTransactional)
 	TObjectPtr<UScavengingUserWidget> Scavenge;
-
-	UPROPERTY(Transient,NonTransactional)
-	TArray<TObjectPtr<IMouseBlocker>> MouseBlockers;
+	
+	TArray<IMouseBlocker*> MouseBlockers;
 
 public:
 	AGameHUD();

@@ -18,7 +18,7 @@ AClicker2Character::AClicker2Character(const FObjectInitializer& ObjectInitializ
 {
 	// Set size for player capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel2,ECR_Ignore);
 	// Don't rotate character to camera direction
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -51,7 +51,6 @@ AClicker2Character::AClicker2Character(const FObjectInitializer& ObjectInitializ
 	
 	PickupItemsComponent = CreateDefaultSubobject<USearchForPickupColliderComponent>(TEXT("Pickup"));
 	PickupItemsComponent->SetupAttachment(RootComponent);
-	
 	//PickupCapsule->SetParams(Inventory);
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;

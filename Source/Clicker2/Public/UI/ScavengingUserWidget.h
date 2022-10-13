@@ -30,8 +30,9 @@ class CLICKER2_API UScavengingUserWidget : public UMainGameWindowUserWidget
 	UPROPERTY(Transient, NonTransactional)
 	USearchForPickupColliderComponent* CurrentPickupComponent;
 
+	//Contain IItemHolders
 	UPROPERTY(Transient, NonTransactional)
-	TArray<TObjectPtr<IItemHolder>> ItemHolders;
+	TArray<TScriptInterface<IItemHolder>> ItemHolders;
 	
 	int CurrentWidgetIndex = 0;
 
@@ -44,6 +45,9 @@ class CLICKER2_API UScavengingUserWidget : public UMainGameWindowUserWidget
 	
 	void RefreshButtons();
 
+	virtual void Show() override;
+
+	virtual void NativeConstruct() override;
 public:
 
 	void Show(USearchForPickupColliderComponent* pickupComponent);

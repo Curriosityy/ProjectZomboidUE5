@@ -3,6 +3,8 @@
 
 #include "UI/ItemHolderWidget.h"
 
+#include "macros.h"
+#include "Blueprint/DragDropOperation.h"
 #include "Components/Button.h"
 #include "Components/UniformGridPanel.h"
 #include "ItemSystem/ItemHolder.h"
@@ -13,11 +15,15 @@
 void UItemHolderWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
-	ItemsPanel->ClearChildren();
-
-	for(int i=0;i<TestItemCount;i++)
+	
+	if(ItemWidget)
 	{
-		ItemsPanel->AddChild(NewObject<UItemWidget>(this,ItemWidget));
+		ItemsPanel->ClearChildren();
+
+		for(int i=0;i<TestItemCount;i++)
+		{
+			ItemsPanel->AddChild(NewObject<UItemWidget>(this,ItemWidget));
+		}
 	}
 }
 
@@ -45,7 +51,7 @@ void UItemHolderWidget::RefreshInventoryUI()
 	{
 		if(ItemsToShow.Num()>i)
 		{
-			ItemWidgets[i]->SetItem(CurrentItemHolder);
+			ItemWidgets[i]->SetItem(CurrentItemHolder.GetInterface());
 			ItemWidgets[i]->SetVisibility(ESlateVisibility::Visible);
 		}
 		else
@@ -78,7 +84,7 @@ void UItemHolderWidget::SetupPaginationButtons()
 	{
 		for(int i=0;i<=maxPages;i++)
 		{
-			if(PaginationButtons.Num()<i)
+			if(PaginationButtons.Num()<=i)
 			{
 				auto button = NewObject<UButtonBroadcastSelf>(this);
 				button->OnClickedSelf.AddDynamic(this,&UItemHolderWidget::OnPaginationClick);
@@ -93,6 +99,34 @@ void UItemHolderWidget::SetupPaginationButtons()
 	}
 }
 
+bool UItemHolderWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
+	UDragDropOperation* InOperation)
+{
+	bool handled = false;;
+	
+	if (!Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation))
+	{
+		if (auto sender = static_cast<UItemWidget*>(InOperation->Payload))
+		{
+			if(sender->GetItemHolder() == CurrentItemHolder.GetInterface())
+			{
+				
+			}
+			else
+			{
+				CurrentItemHolder->AddItem(sender->GetItemHolder(),sender->GetHeldItem());
+			}
+			
+			sender->DragFinished();
+			handled=true;
+		}
+	}
+
+	
+	return handled;
+}
+
+
 void UItemHolderWidget::Setup(IItemHolder* itemHolder)
 {
 	CurrentPage=0;
@@ -102,7 +136,7 @@ void UItemHolderWidget::Setup(IItemHolder* itemHolder)
 		CurrentItemHolder->GetOnInventoryUpdated()->RemoveDynamic(this, &UItemHolderWidget::OnInventoryUpdated);
 	}
 	
-	CurrentItemHolder = itemHolder;
+	CurrentItemHolder = Cast<UObject>(itemHolder);
 	RefreshInventoryUI();
 	itemHolder->GetOnInventoryUpdated()->AddDynamic(this, &UItemHolderWidget::OnInventoryUpdated);
 }

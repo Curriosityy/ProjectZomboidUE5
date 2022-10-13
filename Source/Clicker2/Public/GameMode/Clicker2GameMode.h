@@ -17,7 +17,8 @@ class AClicker2GameMode : public AGameModeBase
 public:
 	AClicker2GameMode();
 
-	AItemActor* SpawnItem(UItem* Item);
+	AItemActor* SpawnItem(UItem* Item, AActor* spawner);
+	AItemActor* SpawnItem(UItem* Item, FVector position, FRotator rotation, FActorSpawnParameters params);
 
 	UItem* SpawnItem(UItemData* Item);
 };

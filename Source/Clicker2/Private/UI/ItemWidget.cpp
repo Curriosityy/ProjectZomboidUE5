@@ -3,6 +3,7 @@
 
 #include "UI/ItemWidget.h"
 
+#include "macros.h"
 #include "Blueprint/DragDropOperation.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
@@ -10,6 +11,16 @@
 #include "ItemSystem/ItemHolder.h"
 #include "ItemSystem/ItemDatas/ItemData.h"
 #include "Player/Clicker2Character.h"
+
+TObjectPtr<UItem> UItemWidget::GetHeldItem() const
+{
+	return HeldItem;
+}
+
+IItemHolder* UItemWidget::GetItemHolder()
+{
+	return ItemHolder.GetInterface();
+}
 
 void UItemWidget::SetItem(IItemHolder* itemHolder)
 {
@@ -25,7 +36,7 @@ void UItemWidget::SetItem(IItemHolder* itemHolder)
 		}
 	}
 
-	ItemHolder = itemHolder;
+	ItemHolder = itemHolder->_getUObject();
 
 	if (item == nullptr)
 	{
@@ -119,10 +130,10 @@ void UItemWidget::NativeOnDragDetected(const FGeometry& InGeometry, const FPoint
 
 	if (!OutOperation)
 	{
-		OutOperation = NewObject<UDragDropOperation>(this);
+		OutOperation = NewObject<UDragDropOperation>();
 	}
 
-	OutOperation->Payload = HeldItem;
+	OutOperation->Payload = this;
 	auto image = NewObject<UImage>();
 	image->SetVisibility(ESlateVisibility::HitTestInvisible);
 	image->SetBrush(ItemIcon->Brush);
@@ -132,21 +143,22 @@ void UItemWidget::NativeOnDragDetected(const FGeometry& InGeometry, const FPoint
 
 void UItemWidget::NativeOnDragCancelled(const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
 {
-	sIsDragged = false;
+	DragFinished();
 	Super::NativeOnDragCancelled(InDragDropEvent, InOperation);
 }
-
 
 bool UItemWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
                                UDragDropOperation* InOperation)
 {
 	bool handled = false;
+	
 	if (!Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation))
 	{
-		if (auto sender = static_cast<UItemWidget*>(InOperation->GetOuter()))
+		if (auto sender = static_cast<UItemWidget*>(InOperation->Payload))
 		{
 			if (sender->ItemHolder == ItemHolder)
 			{
+				PRINT_DEBUG("UItemWidget::NativeOnDrop");
 				//ItemHolder->Move(sender->Index, Index);
 				handled = true;
 			}
@@ -154,8 +166,25 @@ bool UItemWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent
 			{
 			}
 		}
+		
+		DragFinished();
 	}
 	
-	sIsDragged = false;
 	return handled;
+}
+
+void UItemWidget::SetVisibility(ESlateVisibility InVisibility)
+{
+	Super::SetVisibility(InVisibility);
+
+	if(InVisibility == ESlateVisibility::Hidden)
+	{
+		HeldItem = nullptr;
+		ItemHolder = nullptr;
+	}
+}
+
+void UItemWidget::DragFinished()
+{
+	sIsDragged = false;
 }

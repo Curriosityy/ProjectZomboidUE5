@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "ItemActor.generated.h"
 
+class UItemData;
 class UItem;
 UCLASS()
 class CLICKER2_API AItemActor : public AActor
@@ -30,6 +31,12 @@ private:
 	UPROPERTY(VisibleAnywhere, Transient, NonTransactional)
 	TObjectPtr<UItem> BaseItem;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UItemData> DebugItemData;
+	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UStaticMeshComponent> StaticMeshComponent;
+	
+	UPROPERTY(EditAnywhere)
+	bool TestObject;
 };

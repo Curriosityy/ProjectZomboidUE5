@@ -40,10 +40,15 @@ AClicker2GameMode::AClicker2GameMode()
 	}
 }
 
-AItemActor* AClicker2GameMode::SpawnItem(UItem* Item)
+AItemActor* AClicker2GameMode::SpawnItem(UItem* Item, AActor* spawner)
 {
 	FActorSpawnParameters params;
-	auto item = GetWorld()->SpawnActor<AItemActor>(params);
+	return SpawnItem(Item ,spawner->GetTransform().GetLocation(), FRotator::ZeroRotator, params);
+}
+
+AItemActor* AClicker2GameMode::SpawnItem(UItem* Item, FVector position, FRotator rotation,FActorSpawnParameters params)
+{
+	auto item = GetWorld()->SpawnActor<AItemActor>(position,rotation,params);
 	item->Setup(Item);
 	return item;
 }

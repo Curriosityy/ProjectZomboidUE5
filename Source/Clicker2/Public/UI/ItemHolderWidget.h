@@ -47,10 +47,10 @@ private:
 	UPROPERTY(VisibleAnywhere, Transient, NonTransactional)
 	int CurrentPage;
 
-	UPROPERTY(VisibleAnywhere, Transient, NonTransactional)
-	TObjectPtr<IItemHolder> CurrentItemHolder;
+	UPROPERTY(Transient, NonTransactional)
+	TScriptInterface<IItemHolder> CurrentItemHolder;
 	
-
+protected:
 	UFUNCTION()
 	void OnInventoryUpdated(TScriptInterface<IItemHolder> ChangedItemHolder);
 	
@@ -62,9 +62,13 @@ private:
 	
 	void SetupPaginationButtons();
 
+	virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
+	
 public:
 	void Setup(IItemHolder* inventoryHolder);
 	UItemHolderWidget(const FObjectInitializer& ObjectInitializer);
 	virtual void NativeConstruct() override;
 	virtual void NativePreConstruct() override;
+
+	
 };

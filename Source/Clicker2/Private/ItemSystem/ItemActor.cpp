@@ -2,6 +2,9 @@
 
 
 #include "ItemSystem/ItemActor.h"
+
+#include "macros.h"
+#include "GameMode/Clicker2GameMode.h"
 #include "ItemSystem/Item.h"
 #include "ItemSystem/ItemDatas/ItemData.h"
 
@@ -17,15 +20,29 @@ AItemActor::AItemActor()
 	StaticMeshComponent->SetGenerateOverlapEvents(true);
 	StaticMeshComponent->SetEnableGravity(true);
 	StaticMeshComponent->SetSimulatePhysics(true);
-	StaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	StaticMeshComponent->SetCollisionObjectType(ECC_WorldDynamic);
-	StaticMeshComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	StaticMeshComponent->SetEnableGravity(true);
 }
 
 // Called when the game starts or when spawned
 void AItemActor::BeginPlay()
 {
 	Super::BeginPlay();
+
+	StaticMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	StaticMeshComponent->SetCollisionObjectType(ECC_GameTraceChannel2);
+	StaticMeshComponent->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
+	StaticMeshComponent->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
+	StaticMeshComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	StaticMeshComponent->SetCollisionResponseToChannel(ECC_PhysicsBody, ECR_Overlap);
+	StaticMeshComponent->SetCollisionResponseToChannel(ECC_Vehicle, ECR_Overlap);
+	StaticMeshComponent->SetCollisionResponseToChannel(ECC_Destructible, ECR_Block);
+	StaticMeshComponent->SetCollisionResponseToChannel(ECC_GameTraceChannel2,ECR_Ignore);
+	
+	if(TestObject)
+	{
+		auto test = NewObject<UItemData>(this,DebugItemData);
+		Setup(GetWorld()->GetAuthGameMode<AClicker2GameMode>()->SpawnItem(test));
+	}
 }
 
 // Called every frame

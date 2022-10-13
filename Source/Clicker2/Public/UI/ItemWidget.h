@@ -36,10 +36,15 @@ protected:
 	TObjectPtr<UTexture2D> EmptySlot;
 
 	UPROPERTY(Transient, NonTransactional)
-	TObjectPtr<UItem> HeldItem;
-
+	TObjectPtr<UItem> HeldItem = nullptr;
+	
 	UPROPERTY(Transient, NonTransactional)
-	TObjectPtr<IItemHolder> ItemHolder;
+	TScriptInterface<IItemHolder> ItemHolder = nullptr;
+
+public:
+	TObjectPtr<UItem> GetHeldItem() const;
+	IItemHolder* GetItemHolder();
+protected:
 	int Index;
 
 public:
@@ -62,7 +67,11 @@ public:
 	                                  UDragDropOperation*& OutOperation) override;
 
 	virtual void NativeOnDragCancelled(const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
-
 	virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
 	                          UDragDropOperation* InOperation) override;
+
+	virtual void SetVisibility(ESlateVisibility InVisibility) override;
+	void DragFinished();
+
+	
 };

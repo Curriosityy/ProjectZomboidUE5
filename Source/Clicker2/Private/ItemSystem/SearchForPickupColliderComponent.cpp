@@ -3,6 +3,7 @@
 
 #include "ItemSystem/SearchForPickupColliderComponent.h"
 
+#include "GameMode/Clicker2GameMode.h"
 #include "ItemSystem/Item.h"
 #include "ItemSystem/ItemActor.h"
 
@@ -35,10 +36,14 @@ bool USearchForPickupColliderComponent::CanAddItem(UItem* item)
 
 bool USearchForPickupColliderComponent::AddItem(IItemHolder* previousOwner, UItem* item)
 {
-	//TODO:
-	//SPAWN AITEM Based on UItem
-	//remove UItem from previousOwner
-	return IItemHolder::AddItem(previousOwner, item);
+	if(previousOwner->RemoveItem(item))
+	{
+		auto spawnedItem = GetWorld()->GetAuthGameMode<AClicker2GameMode>()->SpawnItem(item,GetOwner());
+		
+		return true;
+	}
+
+	return false;
 }
 
 bool USearchForPickupColliderComponent::RemoveItem(UItem* item)
@@ -82,7 +87,9 @@ USearchForPickupColliderComponent::USearchForPickupColliderComponent()
 {
 	SetGenerateOverlapEvents(true);
 	SetHiddenInGame(true);
-	SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	SetCollisionResponseToAllChannels(ECR_Ignore);
+	SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
 }
 
 void USearchForPickupColliderComponent::OnStartOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
@@ -90,7 +97,7 @@ void USearchForPickupColliderComponent::OnStartOverlap(UPrimitiveComponent* Over
 {
 	if(IItemHolder* itemHolder = dynamic_cast<IItemHolder*>(OtherActor))
 	{
-		OverlappedItemsContainers.Add(itemHolder);
+		OverlappedItemsContainers.Add(itemHolder->_getUObject());
 		OnItemHoldersChanged.Broadcast(this);		
 	}
 	else if(AItemActor* itemActor = dynamic_cast<AItemActor*>(OtherActor))
@@ -105,7 +112,7 @@ void USearchForPickupColliderComponent::OnEndOverlap(UPrimitiveComponent* Overla
 {
 	if(IItemHolder* itemHolder = dynamic_cast<IItemHolder*>(OtherActor))
 	{
-		OverlappedItemsContainers.Remove(itemHolder);
+		OverlappedItemsContainers.Remove(itemHolder->_getUObject());
 		OnItemHoldersChanged.Broadcast(this);	
 	}
 	else if(AItemActor* itemActor = dynamic_cast<AItemActor*>(OtherActor))
@@ -143,7 +150,7 @@ TArray<IItemHolder*> USearchForPickupColliderComponent::GetOverlappedItemsContai
 				ECC_Camera,
 				params))
 			{
-				containers.Add(ItemHolder);
+				containers.Add(ItemHolder.GetInterface());
 			}
 
 			DrawDebugLine(GetWorld(),actor->GetTransform().GetLocation(),GetOwner()->GetTransform().GetLocation(),FColor::Red);
@@ -156,7 +163,7 @@ TArray<IItemHolder*> USearchForPickupColliderComponent::GetOverlappedItemsContai
 				ECC_Camera,
 				params))
 			{
-				containers.Add(ItemHolder);
+				containers.Add(ItemHolder.GetInterface());
 			}
 
 			DrawDebugLine(GetWorld(),comp->GetOwner()->GetTransform().GetLocation(),GetOwner()->GetTransform().GetLocation(),FColor::Red);

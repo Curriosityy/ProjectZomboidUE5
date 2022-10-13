@@ -40,7 +40,7 @@ private:
 	TArray<TObjectPtr<AItemActor>> OverlappedItemsOnGround;
 	
 	UPROPERTY(Transient, NonTransactional)
-	TArray<TObjectPtr<IItemHolder>> OverlappedItemsContainers;
+	TArray<TScriptInterface<IItemHolder>> OverlappedItemsContainers;
 	
 	UFUNCTION()
 	void OnStartOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bBFromSweep, const FHitResult& SweepResult);

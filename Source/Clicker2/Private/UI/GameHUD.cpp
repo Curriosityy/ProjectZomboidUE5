@@ -71,7 +71,7 @@ bool AGameHUD::IsMouseOverBlockUI()
 {
 	bool mouseOver = false;
 	
-	for (const auto Element : MouseBlockers)
+	for (auto Element : MouseBlockers)
 	{
 		mouseOver |= Element->IsMouseOver();
 	}
