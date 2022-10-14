@@ -150,21 +150,26 @@ void UItemWidget::NativeOnDragCancelled(const FDragDropEvent& InDragDropEvent, U
 bool UItemWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
                                UDragDropOperation* InOperation)
 {
-	bool handled = false;
+	bool handled = Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
 	
-	if (!Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation))
+	if (!handled)
 	{
 		if (auto sender = static_cast<UItemWidget*>(InOperation->Payload))
 		{
-			if (sender->ItemHolder == ItemHolder)
+			if(sender->GetItemHolder() && sender->GetHeldItem())
 			{
-				PRINT_DEBUG("UItemWidget::NativeOnDrop");
-				//ItemHolder->Move(sender->Index, Index);
-				handled = true;
+				if (sender->ItemHolder == ItemHolder)
+				{
+					PRINT_DEBUG("UItemWidget::NativeOnDrop");
+					//ItemHolder->Move(sender->Index, Index);
+					handled = true;
+				}
+				else
+				{
+					
+				}
 			}
-			else
-			{
-			}
+
 		}
 		
 		DragFinished();

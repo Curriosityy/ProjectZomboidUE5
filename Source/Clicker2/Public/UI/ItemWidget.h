@@ -69,7 +69,7 @@ public:
 	virtual void NativeOnDragCancelled(const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
 	virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
 	                          UDragDropOperation* InOperation) override;
-
+	
 	virtual void SetVisibility(ESlateVisibility InVisibility) override;
 	void DragFinished();
 

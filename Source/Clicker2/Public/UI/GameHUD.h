@@ -6,6 +6,7 @@
 #include "GameFramework/HUD.h"
 #include "GameHUD.generated.h"
 
+class UDropItemOnGroundUserWidget;
 class UScavengingUserWidget;
 class AClicker2Character;
 class UInventoryUserWidget;
@@ -27,16 +28,23 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> ScavengeWidget;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> DropItemOnGroundWidget;
+	
 	UPROPERTY(Transient,NonTransactional)
 	TObjectPtr<UInventoryUserWidget> Inventory;
 
 	UPROPERTY(Transient,NonTransactional)
 	TObjectPtr<UScavengingUserWidget> Scavenge;
 	
+	UPROPERTY(Transient,NonTransactional)
+	TObjectPtr<UDropItemOnGroundUserWidget> DropItemOnGround;
+	
 	TArray<IMouseBlocker*> MouseBlockers;
 
 public:
 	AGameHUD();
+	void ShowDropItemOnGroundWidget(AClicker2Character* characterToOpenInventory);
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;

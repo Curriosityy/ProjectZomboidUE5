@@ -102,20 +102,24 @@ void UItemHolderWidget::SetupPaginationButtons()
 bool UItemHolderWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
 	UDragDropOperation* InOperation)
 {
-	bool handled = false;;
+	bool handled = Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
 	
-	if (!Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation))
+	if (!handled)
 	{
 		if (auto sender = static_cast<UItemWidget*>(InOperation->Payload))
 		{
-			if(sender->GetItemHolder() == CurrentItemHolder.GetInterface())
+			if(sender->GetItemHolder() && sender->GetHeldItem())
 			{
+				if(sender->GetItemHolder() == CurrentItemHolder.GetInterface())
+				{
 				
+				}
+				else
+				{
+					CurrentItemHolder->AddItem(sender->GetItemHolder(),sender->GetHeldItem());
+				}
 			}
-			else
-			{
-				CurrentItemHolder->AddItem(sender->GetItemHolder(),sender->GetHeldItem());
-			}
+
 			
 			sender->DragFinished();
 			handled=true;

@@ -5,18 +5,31 @@
 
 #include "Blueprint/UserWidget.h"
 #include "Player/Clicker2Character.h"
+#include "UI/DropItemOnGroundUserWidget.h"
 #include "UI/InventoryUserWidget.h"
 #include "UI/ItemWidget.h"
 #include "UI/ScavengingUserWidget.h"
+#include "UI/DropItemOnGroundUserWidget.h"
 
 AGameHUD::AGameHUD()
 {
+}
+
+void AGameHUD::ShowDropItemOnGroundWidget(AClicker2Character* characterToOpenInventory)
+{
+	if(!DropItemOnGround)
+	{
+		DropItemOnGround = CreateWidget<UDropItemOnGroundUserWidget>(GetWorld(), DropItemOnGroundWidget);
+		DropItemOnGround->AddToViewport(-1000);
+		DropItemOnGround->Setup(characterToOpenInventory);
+	}
 }
 
 void AGameHUD::BeginPlay()
 {
 	Super::BeginPlay();
 	UItemWidget::sIsDragged = false;
+	
 }
 
 void AGameHUD::Tick(float DeltaSeconds)
@@ -31,6 +44,8 @@ void AGameHUD::DrawHUD()
 
 void AGameHUD::OpenInventoryWindow(AClicker2Character* characterToOpenInventory)
 {
+	ShowDropItemOnGroundWidget(characterToOpenInventory);
+	
 	if (Inventory == nullptr)
 	{
 		Inventory = CreateWidget<UInventoryUserWidget>(GetWorld(), InventoryWidget);
@@ -50,6 +65,8 @@ void AGameHUD::OpenInventoryWindow(AClicker2Character* characterToOpenInventory)
 
 void AGameHUD::OpenScavengeWindow(AClicker2Character* characterToOpenInventory)
 {
+	ShowDropItemOnGroundWidget(characterToOpenInventory);
+	
 	if (Scavenge == nullptr)
 	{
 		Scavenge = CreateWidget<UScavengingUserWidget>(GetWorld(), ScavengeWidget);
