@@ -6,12 +6,15 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameMode/Clicker2GameMode.h"
+#include "ItemSystem/EquippedItem.h"
 #include "ItemSystem/InventoryComponent.h"
 #include "ItemSystem/Item.h"
 #include "ItemSystem/SearchForPickupColliderComponent.h"
 #include "Player/HPComponent.h"
 #include "Player/PlayerMovementComponent.h"
 #include "Player/PlayerStatsComponent.h"
+#include "WeaponSystem/GunItemdata.h"
 
 AClicker2Character::AClicker2Character(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UPlayerMovementComponent>(CharacterMovementComponentName))
@@ -81,8 +84,9 @@ void AClicker2Character::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (TestItem)
+	if(TestItem)
 	{
-		//TestItem.GetDefaultObject()->Spawn(this);
+		auto testItemData = GetWorld()->GetAuthGameMode<AClicker2GameMode>()->SpawnItem(TestItem.GetDefaultObject());
+		InventoryComp->GetRightHand()->AddItem(nullptr, testItemData);
 	}
 }

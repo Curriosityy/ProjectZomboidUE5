@@ -26,5 +26,5 @@ UItemData* UItem::GetItemData()
 template<class T>
 T* UItem::GetItemData()
 {
-	return Cast<T>(ItemData);
+	return dynamic_cast<T*>(ItemData);
 }

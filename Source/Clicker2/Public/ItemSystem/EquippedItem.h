@@ -14,8 +14,10 @@ class CLICKER2_API UEquippedItem : public UObject, public IItemHolder
 {
 	GENERATED_BODY()
 
+private:
 	EItemType HeldItemType;
-
+	
+protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UItem> Item;
 

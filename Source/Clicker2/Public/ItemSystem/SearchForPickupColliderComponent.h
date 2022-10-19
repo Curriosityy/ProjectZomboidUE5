@@ -7,6 +7,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "SearchForPickupColliderComponent.generated.h"
 
+class IPickupable;
 class AItemActor;
 class UItem;
 /**
@@ -37,14 +38,14 @@ private:
 
 
 	UPROPERTY(Transient, NonTransactional)
-	TArray<TObjectPtr<AItemActor>> OverlappedItemsOnGround;
+	TArray<TScriptInterface<IPickupable>> OverlappedItemsOnGround;
 	
 	UPROPERTY(Transient, NonTransactional)
 	TArray<TScriptInterface<IItemHolder>> OverlappedItemsContainers;
 	
 	UFUNCTION()
 	void OnStartOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bBFromSweep, const FHitResult& SweepResult);
-
+	
 	UFUNCTION()
 	void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	

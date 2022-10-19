@@ -21,4 +21,7 @@ public:
 	AItemActor* SpawnItem(UItem* Item, FVector position, FRotator rotation, FActorSpawnParameters params);
 
 	UItem* SpawnItem(UItemData* Item);
+
+	inline static FName LEFT_HAND_WEAPON_SOCKET = "LeftHandWeapon";
+	inline static FName RIGHT_HAND_WEAPON_SOCKET = "RightHandWeapon";
 };

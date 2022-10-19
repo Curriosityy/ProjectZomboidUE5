@@ -24,12 +24,12 @@ bool UItemData::IsStackable() const
 	return Stackable;
 }
 
-TObjectPtr<UTexture2D> UItemData::GetItemThumbnail() const
+UTexture2D* UItemData::GetItemThumbnail() const
 {
 	return ItemThumbnail;
 }
 
-TObjectPtr<UStaticMesh> UItemData::GetItemInWorld() const
+UStreamableRenderAsset* UItemData::GetItemInWorld() const
 {
 	return ItemInWorld;
 }

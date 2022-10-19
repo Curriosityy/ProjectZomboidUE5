@@ -28,12 +28,13 @@ void UItemWidget::SetItem(IItemHolder* itemHolder)
 
 	if (itemHolder)
 	{
-		auto items = itemHolder->GetItems();
+		TArray<UItem*> items = itemHolder->GetItems();
 
 		if (items.Num() > Index)
 		{
-			item = itemHolder->GetItems()[Index];
+			item = items[Index];
 		}
+
 	}
 
 	ItemHolder = itemHolder->_getUObject();
@@ -154,11 +155,11 @@ bool UItemWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent
 	
 	if (!handled)
 	{
-		if (auto sender = static_cast<UItemWidget*>(InOperation->Payload))
+		if (auto payload = static_cast<UItemWidget*>(InOperation->Payload))
 		{
-			if(sender->GetItemHolder() && sender->GetHeldItem())
+			if(payload->ItemHolder && payload->HeldItem)
 			{
-				if (sender->ItemHolder == ItemHolder)
+				if (payload->ItemHolder == ItemHolder)
 				{
 					PRINT_DEBUG("UItemWidget::NativeOnDrop");
 					//ItemHolder->Move(sender->Index, Index);
@@ -166,7 +167,7 @@ bool UItemWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent
 				}
 				else
 				{
-					
+					ItemHolder->AddItem(payload->ItemHolder.GetInterface(), payload->HeldItem);
 				}
 			}
 

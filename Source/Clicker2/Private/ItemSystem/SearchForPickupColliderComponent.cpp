@@ -23,7 +23,7 @@ TArray<UItem*> USearchForPickupColliderComponent::GetItems()
 
 	for (auto Item : OverlappedItemsOnGround)
 	{
-		items.Add(Item->GetBaseItem());
+		items.Add(Item->GetItemInfo());
 	}
 	
 	return items;
@@ -50,9 +50,9 @@ bool USearchForPickupColliderComponent::RemoveItem(UItem* item)
 {
 	for (auto itemOnGround : OverlappedItemsOnGround)
 	{
-		if(itemOnGround->GetBaseItem()==item)
+		if(itemOnGround->GetItemInfo()==item)
 		{
-			itemOnGround->Destroy();
+			itemOnGround->PickUp();
 
 			return true;
 		}
@@ -67,7 +67,7 @@ float USearchForPickupColliderComponent::GetWeightOfHeldItems()
 	
 	for (auto itemOnGround : OverlappedItemsOnGround)
 	{
-		sum += itemOnGround->GetBaseItem()->GetItemData()->GetWeight();
+		sum += itemOnGround->GetItemInfo()->GetItemData()->GetWeight();
 	}
 	
 	return sum;
@@ -100,10 +100,18 @@ void USearchForPickupColliderComponent::OnStartOverlap(UPrimitiveComponent* Over
 		OverlappedItemsContainers.Add(itemHolder->_getUObject());
 		OnItemHoldersChanged.Broadcast(this);		
 	}
-	else if(AItemActor* itemActor = dynamic_cast<AItemActor*>(OtherActor))
+
+	if(IPickupable* pickupable = dynamic_cast<IPickupable*>(OtherActor))
 	{
-		OverlappedItemsOnGround.Add(itemActor);
-		OnItemOnGroundUpdated.Broadcast(TScriptInterface<IItemHolder>(this));
+		if(pickupable->CanPickUp())
+		{
+			OverlappedItemsOnGround.Add(pickupable->_getUObject());
+			OnItemOnGroundUpdated.Broadcast(this);
+		}
+		else
+		{
+			//TODO:Track if changed
+		}
 	}
 }
 
@@ -115,9 +123,10 @@ void USearchForPickupColliderComponent::OnEndOverlap(UPrimitiveComponent* Overla
 		OverlappedItemsContainers.Remove(itemHolder->_getUObject());
 		OnItemHoldersChanged.Broadcast(this);	
 	}
-	else if(AItemActor* itemActor = dynamic_cast<AItemActor*>(OtherActor))
+
+	if(IPickupable* pickupable = dynamic_cast<IPickupable*>(OtherActor))
 	{
-		OverlappedItemsOnGround.Remove(itemActor);
+		OverlappedItemsOnGround.Remove(pickupable->_getUObject());
 		OnItemOnGroundUpdated.Broadcast(this);
 	}
 }
@@ -142,32 +151,8 @@ TArray<IItemHolder*> USearchForPickupColliderComponent::GetOverlappedItemsContai
 
 	for (auto ItemHolder : OverlappedItemsContainers)
 	{
-		if(auto actor = static_cast<AActor*>(ItemHolder->_getUObject()))
-		{
-			if(GetWorld()->LineTraceTestByChannel(
-				actor->GetTransform().GetLocation(),
-				GetOwner()->GetTransform().GetLocation(),
-				ECC_Camera,
-				params))
-			{
-				containers.Add(ItemHolder.GetInterface());
-			}
-
-			DrawDebugLine(GetWorld(),actor->GetTransform().GetLocation(),GetOwner()->GetTransform().GetLocation(),FColor::Red);
-		}
-		else if(auto comp = static_cast<UPrimitiveComponent*>(ItemHolder->_getUObject()))
-		{
-			if(GetWorld()->LineTraceTestByChannel(
-				comp->GetOwner()->GetTransform().GetLocation(),
-				GetOwner()->GetTransform().GetLocation(),
-				ECC_Camera,
-				params))
-			{
-				containers.Add(ItemHolder.GetInterface());
-			}
-
-			DrawDebugLine(GetWorld(),comp->GetOwner()->GetTransform().GetLocation(),GetOwner()->GetTransform().GetLocation(),FColor::Red);
-		}
+		containers.Add(ItemHolder.GetInterface());
+		//TODO, not pickup throug walls
 	}
 	
 	

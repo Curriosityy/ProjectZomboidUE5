@@ -4,10 +4,12 @@
 #include "ItemSystem/InventoryComponent.h"
 
 #include "macros.h"
+#include "GameMode/Clicker2GameMode.h"
 #include "Player/Clicker2Character.h"
 #include "ItemSystem/EquippedItem.h"
 #include "ItemSystem/BasicItemContainer.h"
 #include "ItemSystem/ItemDatas/ItemData.h"
+#include "WeaponSystem/EquippedWeapon.h"
 
 // Sets default values for this component's properties
 UInventoryComponent::UInventoryComponent()
@@ -25,15 +27,11 @@ UInventoryComponent::UInventoryComponent()
 	ArmorPlace = CreateDefaultSubobject<UEquippedItem>(TEXT("ArmorPlace"));
 	ArmorPlace->Initialize(EItemType::Armor);
 
-	LeftHand = CreateDefaultSubobject<UEquippedItem>(TEXT("LeftHandPlace"));
-	LeftHand->Initialize(EItemType::LeftHand);
-	
-	RightHand = CreateDefaultSubobject<UEquippedItem>(TEXT("RightHandPlace"));
-	RightHand->Initialize(EItemType::RightHand);
-
+	LeftHand = CreateDefaultSubobject<UEquippedWeapon>(TEXT("LeftHandPlace"));
+	RightHand = CreateDefaultSubobject<UEquippedWeapon>(TEXT("RightHandPlace"));
 	Legs = CreateDefaultSubobject<UEquippedItem>(TEXT("LegsPlace"));
 	Legs->Initialize(EItemType::Legs);
-
+	
 	Boots = CreateDefaultSubobject<UEquippedItem>(TEXT("BootsPlace"));
 	Boots->Initialize(EItemType::Boots);
 
@@ -47,7 +45,9 @@ UInventoryComponent::UInventoryComponent()
 void UInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
+	auto owner = GetOwner<AClicker2Character>();
+	RightHand->Initialize(EItemType::All, AClicker2GameMode::RIGHT_HAND_WEAPON_SOCKET,owner->GetMesh() ,LeftHand);
+	LeftHand->Initialize(EItemType::All, AClicker2GameMode::LEFT_HAND_WEAPON_SOCKET,owner->GetMesh() ,RightHand);
 	// ...
 }
 

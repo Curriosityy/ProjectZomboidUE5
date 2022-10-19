@@ -7,8 +7,23 @@
 #include "ItemSystem/InventoryComponent.h"
 #include "UI/ItemWidget.h"
 
+void UEquipmentUserWidget::Unsubscribe(UInventoryComponent* InventoryComponent)
+{
+}
+
+void UEquipmentUserWidget::Subscribe(UInventoryComponent* InventoryComponent)
+{
+}
+
+
 void UEquipmentUserWidget::Setup(UInventoryComponent* InventoryComponent)
 {
+	if(CurrentInventoryComponent)
+		Unsubscribe(CurrentInventoryComponent);
+	
+	CurrentInventoryComponent = InventoryComponent;
+	Subscribe(CurrentInventoryComponent);
+	
 	Head->SetItem(InventoryComponent->GetHelmetPlace());
 	Backpack->SetItem(InventoryComponent->GetBackpack());
 	RightHand->SetItem(InventoryComponent->GetRightHand());

@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Clicker2Character.generated.h"
 
+class UGunItemdata;
 class USearchForPickupColliderComponent;
 class UPlayerStatsComponent;
 class UItem;
@@ -60,7 +61,8 @@ public:
 	UPlayerStatsComponent* GetStatsComponent() const;
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Player")
-	TSubclassOf<UItem> TestItem;
+	TSubclassOf<UGunItemdata> TestItem;
 
 	virtual void BeginPlay() override;
+	
 };

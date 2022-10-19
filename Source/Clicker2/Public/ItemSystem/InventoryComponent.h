@@ -9,6 +9,7 @@
 
 class UBasicItemContainer;
 class UEquippedItem;
+class UEquippedWeapon;
 class IItemHolder;
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class CLICKER2_API UInventoryComponent : public UActorComponent
@@ -47,10 +48,10 @@ private:
 	TObjectPtr<UEquippedItem> ArmorPlace;
 	
 	UPROPERTY(Instanced, Transient,VisibleAnywhere, Category="EquipedItems", DisplayName="OffHand")
-	TObjectPtr<UEquippedItem> LeftHand;
+	TObjectPtr<UEquippedWeapon> LeftHand;
 	
 	UPROPERTY(Instanced, Transient,VisibleAnywhere, Category="EquipedItems", DisplayName="MainHand")
-	TObjectPtr<UEquippedItem> RightHand;
+	TObjectPtr<UEquippedWeapon> RightHand;
 
 	UPROPERTY(Instanced, Transient,VisibleAnywhere, Category="EquipedItems", DisplayName="Legs")
 	TObjectPtr<UEquippedItem> Legs;

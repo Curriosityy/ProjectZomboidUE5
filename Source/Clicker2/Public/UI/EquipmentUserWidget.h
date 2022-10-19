@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "ItemSystem/EquippedItem.h"
 #include "EquipmentUserWidget.generated.h"
 
 class UInventoryComponent;
@@ -36,8 +37,15 @@ class CLICKER2_API UEquipmentUserWidget : public UUserWidget
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UItemWidget> Boots;
-	
+
+	UPROPERTY(Transient,NonTransactional)
+	TObjectPtr<UInventoryComponent> CurrentInventoryComponent;
+
 public:
+	void Unsubscribe(UInventoryComponent* Object);
+	
+	void Subscribe(UInventoryComponent* Object);
+	
 	void Setup(UInventoryComponent* InventoryComponent);
 
 	virtual void NativeOnInitialized() override;
