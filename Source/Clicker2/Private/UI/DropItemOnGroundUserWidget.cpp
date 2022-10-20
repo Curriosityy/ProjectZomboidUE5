@@ -16,17 +16,17 @@ bool UDropItemOnGroundUserWidget::NativeOnDrop(const FGeometry& InGeometry, cons
 
 	if(!handled)
 	{
-		if (auto sender = static_cast<UItemWidget*>(InOperation->Payload))
+		if (UItemWidget* Payload = static_cast<UItemWidget*>(InOperation->Payload))
 		{
-			if(sender->GetItemHolder() && sender->GetHeldItem())
+			if(Payload->GetItemHolder() && Payload->GetHeldItem())
 			{
-				if(sender->GetItemHolder() != SearchItemComp)
+				if(Payload->GetItemHolder() != SearchItemComp)
 				{
-					SearchItemComp->AddItem(sender->GetItemHolder(),sender->GetHeldItem());
+					SearchItemComp->AddItem(Payload->GetItemHolder(),Payload->GetHeldItem());
 				}
 			}
 			
-			sender->DragFinished();
+			Payload->DragFinished();
 			handled=true;
 		}
 	}

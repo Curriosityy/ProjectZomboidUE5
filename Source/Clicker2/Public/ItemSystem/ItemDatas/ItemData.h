@@ -48,9 +48,16 @@ class CLICKER2_API UItemData : public UDataAsset
 	UPROPERTY(EditDefaultsOnly, Category="Item")
 	TObjectPtr<UTexture2D> ItemThumbnail;
 
-	UPROPERTY(EditDefaultsOnly, Category="Item")
+	UPROPERTY(EditDefaultsOnly, Category="Model")
 	TObjectPtr<UStreamableRenderAsset> ItemInWorld;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Model")
+	bool bIsStaticMesh;
 
+public:
+	bool IsStaticMesh() const;
+
+private:
 	UPROPERTY(EditDefaultsOnly, Category="Usability")
 	TArray<TSubclassOf<UItemUsability>> ItemUsabilities;
 

@@ -4,6 +4,11 @@
 #include "ItemSystem/ItemDatas/ItemData.h"
 
 
+bool UItemData::IsStaticMesh() const
+{
+	return bIsStaticMesh;
+}
+
 FGuid UItemData::GetID() const
 {
 	return ID;

@@ -20,7 +20,7 @@ public:
 	void SetCollisions(UMeshComponent* obj, bool b);
 
 protected:
-	void SetCollisions(UMeshComponent* obj);
+	void SetCollisionsResponse(UMeshComponent* obj);
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -44,6 +44,9 @@ private:
 	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USkeletalMeshComponent> SkeletalMeshComponentt;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USceneComponent> Root;
 	
 	UPROPERTY(EditAnywhere)
 	bool TestObject;

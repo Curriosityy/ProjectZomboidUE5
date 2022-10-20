@@ -14,14 +14,11 @@ AItemActor::AItemActor()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	Root = CreateDefaultSubobject<USceneComponent>("DefaultRoot");
+	SetRootComponent(Root);
+	
 	StaticMeshComponentt = CreateDefaultSubobject<UStaticMeshComponent>("DefaultStaticMesh");
 	StaticMeshComponentt->SetupAttachment(GetRootComponent());
-	SkeletalMeshComponentt = CreateDefaultSubobject<USkeletalMeshComponent>("DefaultSkeletalMesh");
-	SkeletalMeshComponentt->SetupAttachment(GetRootComponent());
-
-
-	SetCollisions(StaticMeshComponentt,false);
-	SetCollisions(SkeletalMeshComponentt,false);
 }
 
 void AItemActor::SetCollisions(UMeshComponent* obj,bool b)
@@ -32,7 +29,7 @@ void AItemActor::SetCollisions(UMeshComponent* obj,bool b)
 	obj->SetEnableGravity(b);
 }
 
-void AItemActor::SetCollisions(UMeshComponent* obj)
+void AItemActor::SetCollisionsResponse(UMeshComponent* obj)
 {
 	obj->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	obj->SetCollisionObjectType(ECC_GameTraceChannel2);
@@ -49,14 +46,13 @@ void AItemActor::SetCollisions(UMeshComponent* obj)
 void AItemActor::BeginPlay()
 {
 	Super::BeginPlay();
-
-	SetCollisions(StaticMeshComponentt);
-	SetCollisions(SkeletalMeshComponentt);
+	
+	StaticMeshComponentt->DestroyComponent();
+	StaticMeshComponentt=nullptr;
 	
 	if(TestObject)
 	{
 		auto test = NewObject<UItemData>(this,DebugItemData);
-		SetCollisions(StaticMeshComponentt, true);
 		Setup(GetWorld()->GetAuthGameMode<AClicker2GameMode>()->SpawnItem(test));
 	}
 }
@@ -70,18 +66,34 @@ void AItemActor::Tick(float DeltaTime)
 void AItemActor::Setup(UItem* baseItem)
 {
 	this->BaseItem = baseItem;
-	
-	if(auto casted = static_cast<UStaticMesh*>(BaseItem->GetItemData()->GetItemInWorld()))
+
+	if(StaticMeshComponentt)
 	{
-		StaticMeshComponentt->SetStaticMesh(casted);
+		StaticMeshComponentt->DestroyComponent();
+	}
+
+	if(SkeletalMeshComponentt)
+	{
+		SkeletalMeshComponentt->DestroyComponent();
+	}
+	
+	if(BaseItem->GetItemData()->IsStaticMesh())
+	{
+		StaticMeshComponentt = NewObject<UStaticMeshComponent>(this);
+		StaticMeshComponentt->AttachToComponent(RootComponent,FAttachmentTransformRules::SnapToTargetIncludingScale);
+		StaticMeshComponentt->SetStaticMesh(static_cast<UStaticMesh*>(BaseItem->GetItemData()->GetItemInWorld()));
+		SetCollisionsResponse(StaticMeshComponentt);
 		SetCollisions(StaticMeshComponentt,true);
-		SetCollisions(SkeletalMeshComponentt,false);
+		StaticMeshComponentt->RegisterComponent();
 	}
 	else
 	{
+		SkeletalMeshComponentt = NewObject<USkeletalMeshComponent>(this);
+		SkeletalMeshComponentt->AttachToComponent(RootComponent,FAttachmentTransformRules::SnapToTargetIncludingScale);
 		SkeletalMeshComponentt->SetSkeletalMesh(static_cast<USkeletalMesh*>(BaseItem->GetItemData()->GetItemInWorld()));
+		SetCollisionsResponse(SkeletalMeshComponentt);
 		SetCollisions(SkeletalMeshComponentt,true);
-		SetCollisions(StaticMeshComponentt,false);
+		SkeletalMeshComponentt->RegisterComponent();
 	}
 }
 
