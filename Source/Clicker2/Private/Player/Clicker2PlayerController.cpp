@@ -16,6 +16,7 @@ AClicker2PlayerController::AClicker2PlayerController()
 {
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Default;
+	ObjectArray.Add(UEngineTypes::ConvertToObjectType(ECC_GameTraceChannel3));
 }
 
 void AClicker2PlayerController::PlayerTick(float DeltaTime)
@@ -85,10 +86,14 @@ void AClicker2PlayerController::RotateToMousePointer()
 	CHECK_IS_OVER_UI();
 
 	FHitResult Hit;
-	GetHitResultUnderCursor(ECC_WorldStatic, true, Hit);
+	GetHitResultUnderCursorForObjects(ObjectArray, false, Hit);
 	APawn* myPawn = GetPawn();
 	auto Location = Hit.Location;
-	Location.Z = 0;
+	//Location.Z = myPawn->GetActorLocation().Z;
+
+	if(Hit.GetActor())
+		PRINT_DEBUG("%s",*Hit.GetActor()->GetName());
+	
 	myPawn->GetController()->SetControlRotation(
 		UKismetMathLibrary::FindLookAtRotation(myPawn->GetActorLocation(), Location));
 }

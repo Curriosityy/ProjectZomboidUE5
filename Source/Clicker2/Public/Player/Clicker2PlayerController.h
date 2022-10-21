@@ -49,4 +49,7 @@ private:
 
 	UPROPERTY(Transient, DuplicateTransient)
 	TObjectPtr<AClicker2Character> PlayerCharacter;
+
+	UPROPERTY(VisibleAnywhere)
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectArray;
 };
