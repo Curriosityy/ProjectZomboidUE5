@@ -3,6 +3,11 @@
 
 #include "WeaponSystem/WeaponItemData.h"
 
+TSubclassOf<UWeaponAttackComponent> UWeaponItemData::GetWeaponAttackComponent() const
+{
+	return WeaponAttackComponent;
+}
+
 UWeaponItemData::UWeaponItemData()
 {
 	Range=1;

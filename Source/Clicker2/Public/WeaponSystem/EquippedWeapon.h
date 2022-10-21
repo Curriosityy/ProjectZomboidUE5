@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "ItemSystem/EquippedItem.h"
 #include "EquippedWeapon.generated.h"
+class UWeaponAttackComponent;
 class AWeaponActor;
 /**
  * 
@@ -26,6 +27,9 @@ private:
 
 	UPROPERTY(Transient,NonTransactional)
 	TObjectPtr<AWeaponActor> SpawnedObject;
+
+	UPROPERTY(Transient,NonTransactional)
+	TObjectPtr<UWeaponAttackComponent> AttackComponent;
 public:
 	
 	void Initialize(EItemType itemType, FName Socket, USkeletalMeshComponent* playerMesh, UEquippedWeapon* secondHand);

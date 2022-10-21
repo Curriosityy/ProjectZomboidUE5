@@ -89,7 +89,8 @@ USearchForPickupColliderComponent::USearchForPickupColliderComponent()
 	SetHiddenInGame(true);
 	SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	SetCollisionResponseToAllChannels(ECR_Ignore);
-	SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
+	SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Overlap);
+	SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
 }
 
 void USearchForPickupColliderComponent::OnStartOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

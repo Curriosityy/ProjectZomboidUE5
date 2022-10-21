@@ -6,6 +6,15 @@
 #include "ItemSystem/ItemDatas/ItemData.h"
 #include "WeaponItemData.generated.h"
 
+class UWeaponAttackComponent;
+UENUM(BlueprintType)
+enum class WeaponAttackType : uint8
+{
+	None = 0 UMETA(Hidden),
+	Meele = 1,
+	Ranged = 2,
+};
+
 /**
  * 
  */
@@ -19,8 +28,16 @@ class CLICKER2_API UWeaponItemData : public UItemData
 	
 	UPROPERTY(EditDefaultsOnly)
 	bool TwoHanded;
+	
+	UPROPERTY(EditDefaultsOnly)
+	WeaponAttackType AttackType;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UWeaponAttackComponent> WeaponAttackComponent;
 
 public:
+	TSubclassOf<UWeaponAttackComponent> GetWeaponAttackComponent() const;
+
 	UWeaponItemData();
 	float GetRange() const;
 	bool IsTwoHanded() const;

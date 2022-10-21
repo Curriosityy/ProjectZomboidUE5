@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "HPComponent.generated.h"
 
+class UHPBar;
+class UWidgetComponent;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable)
 class CLICKER2_API UHPComponent : public USceneComponent
@@ -51,10 +53,10 @@ protected:
 	float HPRegenPerSec;
 
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
-	TSubclassOf<class UHPBar> HealthBar;
+	TSubclassOf<UHPBar> HealthBar;
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Player")
-	TObjectPtr<class UWidgetComponent> Widget;
+	TObjectPtr<UWidgetComponent> Widget;
 
 private:
 	float HPRegenTicker;

@@ -2,6 +2,8 @@
 
 #include "Player/Clicker2PlayerController.h"
 
+#include "macros.h"
+#include "Field/FieldSystemTypes.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -9,6 +11,7 @@
 #include "Player/PlayerMovementComponent.h"
 #include "Player/Clicker2Character.h"
 #include "UI/GameHUD.h"
+#include "WeaponSystem/WeaponAttackComponent.h"
 
 #define CHECK_IS_OVER_UI() if(GetHUD<AGameHUD>()->IsMouseOverBlockUI()) return;
 
@@ -47,38 +50,28 @@ void AClicker2PlayerController::MoveRight(float scale)
 
 void AClicker2PlayerController::StartWalk()
 {
-	IsSprinting = false;
-	IsWalking = true;
+	bIsSprinting = false;
+	bIsWalking = true;
 	PlayerMovementComponent->SetMovementMode(PlayerMovementComponent->MovementMode, MYMOVE_SlowWalk);
 }
 
 void AClicker2PlayerController::StartSprint()
 {
-	IsSprinting = true;
-	IsWalking = false;
+	bIsSprinting = true;
+	bIsWalking = false;
 	PlayerMovementComponent->SetMovementMode(PlayerMovementComponent->MovementMode, MYMOVE_Sprint);
 }
 
 void AClicker2PlayerController::StopSprint()
 {
-	IsSprinting = false;
+	bIsSprinting = false;
 	PlayerMovementComponent->SetMovementMode(PlayerMovementComponent->MovementMode, 0);
 }
 
 void AClicker2PlayerController::StopWalk()
 {
-	IsSprinting = false;
+	bIsSprinting = false;
 	PlayerMovementComponent->SetMovementMode(PlayerMovementComponent->MovementMode, 0);
-}
-
-void AClicker2PlayerController::StartFiree()
-{
-	CHECK_IS_OVER_UI();
-}
-
-void AClicker2PlayerController::StopFire()
-{
-	CHECK_IS_OVER_UI();
 }
 
 void AClicker2PlayerController::RotateToMousePointer()
@@ -106,6 +99,36 @@ void AClicker2PlayerController::Search()
 	}
 }
 
+void AClicker2PlayerController::Attack()
+{
+	CHECK_IS_OVER_UI();
+	
+	auto comp = GetPawn()->FindComponentByClass<UWeaponAttackComponent>();
+
+	if(comp)
+		comp->Attack();
+}
+
+void AClicker2PlayerController::StartAim()
+{
+	CHECK_IS_OVER_UI();
+	
+	auto comp = GetPawn()->FindComponentByClass<UWeaponAttackComponent>();
+
+	if(comp)
+		comp->StartAim();
+}
+
+void AClicker2PlayerController::StopAim()
+{
+	CHECK_IS_OVER_UI();
+
+	auto comp = GetPawn()->FindComponentByClass<UWeaponAttackComponent>();
+	
+	if(comp)
+		comp->StopAim();
+}
+
 void AClicker2PlayerController::SetupInputComponent()
 {
 	// set up gameplay key bindings
@@ -120,9 +143,11 @@ void AClicker2PlayerController::SetupInputComponent()
 	InputComponent->BindAction("Walk", IE_Pressed, this, &AClicker2PlayerController::StartWalk);
 	InputComponent->BindAction("Walk", IE_Released, this, &AClicker2PlayerController::StopWalk);
 
-	InputComponent->BindAction("Fire", IE_Pressed, this, &AClicker2PlayerController::StartFiree);
-	InputComponent->BindAction("Fire", IE_Released, this, &AClicker2PlayerController::StopFire);
-
+	InputComponent->BindAction("Fire", IE_Pressed, this, &AClicker2PlayerController::Attack);
+	
+	InputComponent->BindAction("Aim", IE_Pressed, this, &AClicker2PlayerController::StartAim);
+	InputComponent->BindAction("Aim", IE_Released, this, &AClicker2PlayerController::StopAim);
+	
 	InputComponent->BindAction("Search", IE_Pressed, this, &AClicker2PlayerController::Search);
 }
 

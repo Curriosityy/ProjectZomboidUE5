@@ -32,16 +32,19 @@ protected:
 	void StartSprint();
 	void StopSprint();
 	void StopWalk();
-	void StartFiree();
-	void StopFire();
 	void RotateToMousePointer();
 	void Search();
+	void Attack();
+	void StartAim();
+	void StopAim();
 	virtual void SetupInputComponent() override;
 	virtual void BeginPlay() override;
+	
 	// End PlayerController interface
 private:
-	bool IsSprinting;
-	bool IsWalking;
+	bool bIsSprinting;
+	bool bIsWalking;
+	bool bIsAiming;
 	EMovementMode oldMovementType;
 	
 	UPROPERTY(Transient, DuplicateTransient)
