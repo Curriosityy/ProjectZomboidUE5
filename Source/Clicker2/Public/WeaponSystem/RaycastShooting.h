@@ -20,14 +20,19 @@ class CLICKER2_API URaycastShooting : public UWeaponAttackComponent
 	
 protected:
 	virtual void BeginPlay() override;
-	void Aim();
+	void Aim(float TickDelta);
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	UPROPERTY(Transient,NonTransactional)
+	TObjectPtr<AClicker2Character> CurrentAimed;
+
+	UPROPERTY(meta=(ClampMax = "1",ClampMin="0"))
+	float HitPossibility;
 public:
 	URaycastShooting();
 	virtual void StartAim() override;
 	virtual void StopAim() override;
 	virtual void Attack() override;
-	
+		
 
 };

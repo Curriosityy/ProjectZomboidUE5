@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "WeaponSystem/RaycastShooting.h"
+#include "WeaponSystem\RaycastShooting.h"
 
 #include "macros.h"
-#include "Player/Clicker2Character.h"
+#include "Player\Clicker2Character.h"
 
 URaycastShooting::URaycastShooting()
 {
@@ -17,10 +17,8 @@ void URaycastShooting::BeginPlay()
 	Super::BeginPlay();
 }
 
-void URaycastShooting::Aim()
+void URaycastShooting::Aim(float TickDelta)
 {
-	TArray<FHitResult> Hits;
-
 	FVector position = Owner->GetTransform().GetLocation();
 	FVector forward = Owner->GetActorForwardVector();
 	float distance = 1000;
@@ -29,48 +27,69 @@ void URaycastShooting::Aim()
 	FHitResult Hit;
 	FCollisionQueryParams params = FCollisionQueryParams::DefaultQueryParam;
 	params.AddIgnoredActor(Owner);
-	for(int i=0;i<numberOfRay;i++)
+
+	GetWorld()->LineTraceSingleByChannel(Hit, position, position + (forward * distance), ECC_GameTraceChannel1,
+	                                     params);
+
+	if (AClicker2Character* target = dynamic_cast<AClicker2Character*>(Hit.GetActor()))
 	{
-		GetWorld()->LineTraceSingleByChannel(Hit,position, position+(forward*distance), ECC_GameTraceChannel1, params);
-		Hits.Add(Hit);
-
-		if(AClicker2Character* target = dynamic_cast<AClicker2Character*>(Hit.GetActor()))
+		if (target == CurrentAimed)
 		{
-			PRINT_DEBUG("TARGET %s",*target->GetName());
+			HitPossibility += TickDelta;
 		}
-
-		DrawDebugLine(GetWorld(),position,position+(forward*distance),FColor::Red);
+		else
+		{
+			CurrentAimed = target;
+			HitPossibility = 0;
+		}
 	}
+	else
+	{
+		CurrentAimed = nullptr;
+	}
+
+	DrawDebugLine(GetWorld(), position, position + (forward * distance), FColor::Red);
 }
 
 void URaycastShooting::TickComponent(float DeltaTime, ELevelTick TickType,
                                      FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	if(bIsAiming)
+
+	if (bIsAiming)
 	{
-		Aim();
+		Aim(DeltaTime);
 	}
 }
-
 
 
 void URaycastShooting::StartAim()
 {
 	PRINT_DEBUG("URaycastShooting::StartAim");
-	bIsAiming=true;
+	HitPossibility = 0;
+	bIsAiming = true;
 }
 
 void URaycastShooting::StopAim()
 {
 	PRINT_DEBUG("URaycastShooting::StopAim");
-	bIsAiming=false;
+	HitPossibility = 0;
+	bIsAiming = false;
 }
 
 void URaycastShooting::Attack()
 {
-	if(!bIsAiming)
+	if (!bIsAiming)
+	{
 		return;
+	}
+
+	float randomHit = FMath::RandRange(0.f, 1.0f);
+
+	if (randomHit <= HitPossibility)
+	{
+		//ShootRaycast 
+	}
 
 	PRINT_DEBUG("URaycastShooting::Attack");
 }

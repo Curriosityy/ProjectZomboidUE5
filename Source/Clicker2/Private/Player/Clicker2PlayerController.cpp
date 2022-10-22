@@ -82,10 +82,7 @@ void AClicker2PlayerController::RotateToMousePointer()
 	GetHitResultUnderCursorForObjects(ObjectArray, false, Hit);
 	APawn* myPawn = GetPawn();
 	auto Location = Hit.Location;
-	//Location.Z = myPawn->GetActorLocation().Z;
-
-	if(Hit.GetActor())
-		PRINT_DEBUG("%s",*Hit.GetActor()->GetName());
+	Location.Z = myPawn->GetActorLocation().Z;
 	
 	myPawn->GetController()->SetControlRotation(
 		UKismetMathLibrary::FindLookAtRotation(myPawn->GetActorLocation(), Location));
