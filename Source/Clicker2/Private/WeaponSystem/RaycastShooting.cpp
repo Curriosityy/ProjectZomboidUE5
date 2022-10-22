@@ -88,7 +88,7 @@ void URaycastShooting::Attack()
 
 	if (randomHit <= HitPossibility)
 	{
-		//ShootRaycast 
+		//ShootRaycast
 	}
 
 	PRINT_DEBUG("URaycastShooting::Attack");
