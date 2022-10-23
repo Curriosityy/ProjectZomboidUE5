@@ -42,21 +42,14 @@ void URaycastShooting::Aim(float TickDelta)
 		}
 		else
 		{
-			CurrentAimed->GetMesh()->SetRenderCustomDepth(false);
-
-			CurrentAimed = target;
-			CurrentAimed->GetMesh()->SetRenderCustomDepth(true);
+			SetCurrentAimed(target);
 			HitPossibility = 0;
 		}
 	}
 	else
 	{
-		if (CurrentAimed)
-		{
-			CurrentAimed->GetMesh()->SetRenderCustomDepth(false);
-		}
 		HitPossibility = 0;
-		CurrentAimed = nullptr;
+		SetCurrentAimed(nullptr);
 	}
 
 	DrawDebugLine(GetWorld(), position, position + (forward * distance), FColor::Red);
@@ -73,6 +66,21 @@ void URaycastShooting::TickComponent(float DeltaTime, ELevelTick TickType,
 	}
 }
 
+void URaycastShooting::SetCurrentAimed(AClicker2Character* NewAimed)
+{
+	if (CurrentAimed)
+	{
+		CurrentAimed->GetMesh()->SetRenderCustomDepth(false);
+	}
+
+	CurrentAimed = NewAimed;
+
+	if (CurrentAimed)
+	{
+		CurrentAimed->GetMesh()->SetRenderCustomDepth(true);
+	}
+}
+
 
 void URaycastShooting::StartAim()
 {
@@ -86,6 +94,7 @@ void URaycastShooting::StopAim()
 	PRINT_DEBUG("URaycastShooting::StopAim");
 	HitPossibility = 0;
 	bIsAiming = false;
+	SetCurrentAimed(nullptr);
 }
 
 void URaycastShooting::Attack()

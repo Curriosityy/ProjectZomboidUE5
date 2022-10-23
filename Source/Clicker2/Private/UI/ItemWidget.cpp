@@ -1,16 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UI/ItemWidget.h"
+#include "UI\ItemWidget.h"
 
 #include "macros.h"
-#include "Blueprint/DragDropOperation.h"
-#include "Components/Image.h"
-#include "Components/TextBlock.h"
-#include "ItemSystem/Item.h"
-#include "ItemSystem/ItemHolder.h"
-#include "ItemSystem/ItemDatas/ItemData.h"
-#include "Player/Clicker2Character.h"
+#include "Blueprint\DragDropOperation.h"
+#include "Components\Image.h"
+#include "Components\TextBlock.h"
+#include "ItemSystem\Item.h"
+#include "ItemSystem\ItemHolder.h"
+#include "ItemSystem\ItemDatas\ItemData.h"
+#include "Player\Clicker2Character.h"
 
 TObjectPtr<UItem> UItemWidget::GetHeldItem() const
 {
@@ -34,7 +34,6 @@ void UItemWidget::SetItem(IItemHolder* itemHolder)
 		{
 			item = items[Index];
 		}
-
 	}
 
 	ItemHolder = itemHolder->_getUObject();
@@ -51,6 +50,11 @@ void UItemWidget::SetItem(IItemHolder* itemHolder)
 	}
 }
 
+void UItemWidget::SetItem(TScriptInterface<IItemHolder> itemHolderScriptInterface)
+{
+	SetItem(itemHolderScriptInterface.GetInterface());
+}
+
 void UItemWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
@@ -60,9 +64,9 @@ void UItemWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
 
-	if(EmptySlot)
+	if (EmptySlot)
 	{
-		ItemIcon->SetBrushFromTexture(EmptySlot,false);
+		ItemIcon->SetBrushFromTexture(EmptySlot, false);
 	}
 }
 
@@ -152,12 +156,12 @@ bool UItemWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent
                                UDragDropOperation* InOperation)
 {
 	bool handled = Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
-	
+
 	if (!handled)
 	{
 		if (auto payload = static_cast<UItemWidget*>(InOperation->Payload))
 		{
-			if(payload->ItemHolder && payload->HeldItem)
+			if (payload->ItemHolder && payload->HeldItem)
 			{
 				if (payload->ItemHolder == ItemHolder)
 				{
@@ -170,12 +174,11 @@ bool UItemWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent
 					ItemHolder->AddItem(payload->ItemHolder.GetInterface(), payload->HeldItem);
 				}
 			}
-
 		}
-		
+
 		DragFinished();
 	}
-	
+
 	return handled;
 }
 
@@ -183,7 +186,7 @@ void UItemWidget::SetVisibility(ESlateVisibility InVisibility)
 {
 	Super::SetVisibility(InVisibility);
 
-	if(InVisibility == ESlateVisibility::Hidden)
+	if (InVisibility == ESlateVisibility::Hidden)
 	{
 		HeldItem = nullptr;
 		ItemHolder = nullptr;
