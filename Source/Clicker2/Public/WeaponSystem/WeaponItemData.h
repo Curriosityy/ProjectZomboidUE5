@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ItemSystem/ItemDatas/ItemData.h"
+#include "ItemSystem\ItemDatas\ItemData.h"
 #include "WeaponItemData.generated.h"
 
 class UWeaponAttackComponent;
@@ -22,13 +22,19 @@ UCLASS()
 class CLICKER2_API UWeaponItemData : public UItemData
 {
 	GENERATED_BODY()
-	
+
+	UPROPERTY(EditDefaultsOnly)
+	float Damage;
+
+	UPROPERTY(EditDefaultsOnly)
+	float CriticalMultiplier;
+
 	UPROPERTY(EditDefaultsOnly)
 	float Range;
-	
+
 	UPROPERTY(EditDefaultsOnly)
 	bool TwoHanded;
-	
+
 	UPROPERTY(EditDefaultsOnly)
 	WeaponAttackType AttackType;
 
@@ -39,6 +45,8 @@ public:
 	TSubclassOf<UWeaponAttackComponent> GetWeaponAttackComponent() const;
 
 	UWeaponItemData();
+
 	float GetRange() const;
+
 	bool IsTwoHanded() const;
 };
