@@ -5,7 +5,28 @@
 
 #include "ItemSystem\EquippedItem.h"
 #include "ItemSystem\InventoryComponent.h"
+#include "ItemSystem\Item.h"
 #include "UI\ItemWidget.h"
+#include "WeaponSystem\WeaponItemData.h"
+
+void UEquipmentUserWidget::DoubleHandWearTest(TScriptInterface<IItemHolder> ItemHolder)
+{
+	ESlateVisibility visibility = ESlateVisibility::Visible;
+	auto heldItem = ItemHolder->GetItems()[0];
+
+	if (heldItem)
+	{
+		if (auto itemData = Cast<UWeaponItemData>(heldItem->GetItemData()))
+		{
+			if (itemData->IsTwoHanded())
+			{
+				visibility = ESlateVisibility::Hidden;
+			}
+		}
+	}
+
+	LeftHand->SetVisibility(visibility);
+}
 
 void UEquipmentUserWidget::Unsubscribe(UInventoryComponent* InventoryComponent)
 {
@@ -29,6 +50,9 @@ void UEquipmentUserWidget::Unsubscribe(UInventoryComponent* InventoryComponent)
 
 	InventoryComponent->GetBoots()->GetOnInventoryUpdated()
 	                  ->RemoveDynamic(Boots.Get(), &UItemWidget::SetItem);
+
+	InventoryComponent->GetRightHand()->GetOnInventoryUpdated()
+	                  ->RemoveDynamic(this, &UEquipmentUserWidget::DoubleHandWearTest);
 }
 
 void UEquipmentUserWidget::Subscribe(UInventoryComponent* InventoryComponent)
@@ -44,6 +68,10 @@ void UEquipmentUserWidget::Subscribe(UInventoryComponent* InventoryComponent)
 
 	InventoryComponent->GetLeftHand()->GetOnInventoryUpdated()
 	                  ->AddDynamic(LeftHand.Get(), &UItemWidget::SetItem);
+
+	InventoryComponent->GetRightHand()->GetOnInventoryUpdated()
+	                  ->AddDynamic(this, &UEquipmentUserWidget::DoubleHandWearTest);
+
 
 	InventoryComponent->GetArmorPlace()->GetOnInventoryUpdated()
 	                  ->AddDynamic(Chest.Get(), &UItemWidget::SetItem);
@@ -70,6 +98,9 @@ void UEquipmentUserWidget::Setup(UInventoryComponent* InventoryComponent)
 	Backpack->SetItem(InventoryComponent->GetBackpack());
 	RightHand->SetItem(InventoryComponent->GetRightHand());
 	LeftHand->SetItem(InventoryComponent->GetLeftHand());
+
+	DoubleHandWearTest(InventoryComponent->GetRightHand());
+
 	Chest->SetItem(InventoryComponent->GetArmorPlace());
 	Legs->SetItem(InventoryComponent->GetLegs());
 	Boots->SetItem(InventoryComponent->GetBoots());

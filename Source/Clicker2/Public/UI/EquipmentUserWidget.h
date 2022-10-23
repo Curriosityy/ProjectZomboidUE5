@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
-#include "ItemSystem/EquippedItem.h"
+#include "Blueprint\UserWidget.h"
+#include "ItemSystem\EquippedItem.h"
 #include "EquipmentUserWidget.generated.h"
 
 class UInventoryComponent;
@@ -25,7 +25,7 @@ class CLICKER2_API UEquipmentUserWidget : public UUserWidget
 
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UItemWidget> RightHand;
-	
+
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UItemWidget> Chest;
 
@@ -38,14 +38,18 @@ class CLICKER2_API UEquipmentUserWidget : public UUserWidget
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UItemWidget> Boots;
 
-	UPROPERTY(Transient,NonTransactional)
+	UPROPERTY(Transient, NonTransactional)
 	TObjectPtr<UInventoryComponent> CurrentInventoryComponent;
+
+	UFUNCTION()
+	void DoubleHandWearTest(TScriptInterface<IItemHolder> ItemHolder);
 
 public:
 	void Unsubscribe(UInventoryComponent* Object);
-	
+
+
 	void Subscribe(UInventoryComponent* Object);
-	
+
 	void Setup(UInventoryComponent* InventoryComponent);
 
 	virtual void NativeOnInitialized() override;

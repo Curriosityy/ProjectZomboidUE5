@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ItemSystem/EquippedItem.h"
+#include "ItemSystem\EquippedItem.h"
 #include "EquippedWeapon.generated.h"
 class UWeaponAttackComponent;
 class AWeaponActor;
@@ -16,25 +16,29 @@ class CLICKER2_API UEquippedWeapon : public UEquippedItem
 	GENERATED_BODY()
 
 private:
-	
 	FName SocketName;
-	
-	UPROPERTY(Transient,NonTransactional)
+
+	UPROPERTY(Transient, NonTransactional)
 	TObjectPtr<USkeletalMeshComponent> PlayerSkeletalMesh;
-	
-	UPROPERTY(Transient,NonTransactional)
+
+	UPROPERTY(Transient, NonTransactional)
 	TObjectPtr<UEquippedWeapon> SecondHand;
 
-	UPROPERTY(Transient,NonTransactional)
+	UPROPERTY(Transient, NonTransactional)
 	TObjectPtr<AWeaponActor> SpawnedObject;
 
-	UPROPERTY(Transient,NonTransactional)
+	UPROPERTY(Transient, NonTransactional)
 	TObjectPtr<UWeaponAttackComponent> AttackComponent;
+
+	UPROPERTY()
+	bool IsMainHand;
+
 public:
-	
-	void Initialize(EItemType itemType, FName Socket, USkeletalMeshComponent* playerMesh, UEquippedWeapon* secondHand);
+	void Initialize(EItemType itemType, FName Socket, USkeletalMeshComponent* playerMesh, UEquippedWeapon* secondHand,
+	                bool isMainHand);
 
 
 	virtual bool AddItem(IItemHolder* previousOwner, UItem* item) override;
+
 	virtual bool RemoveItem(UItem* item) override;
 };
