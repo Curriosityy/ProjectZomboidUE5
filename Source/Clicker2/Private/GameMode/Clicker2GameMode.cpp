@@ -1,12 +1,16 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "GameMode/Clicker2GameMode.h"
+#include "GameMode\Clicker2GameMode.h"
 
-#include "ItemSystem/Item.h"
-#include "ItemSystem/ItemActor.h"
-#include "Player/Clicker2PlayerController.h"
-#include "UI/GameHUD.h"
-#include "UObject/ConstructorHelpers.h"
+#include "macros.h"
+#include "Engine\PostProcessVolume.h"
+#include "ItemSystem\Item.h"
+#include "ItemSystem\ItemActor.h"
+#include "Materials\MaterialInstance.h"
+#include "Materials\MaterialInstanceDynamic.h"
+#include "Player\Clicker2PlayerController.h"
+#include "UI\GameHUD.h"
+#include "UObject\ConstructorHelpers.h"
 
 AClicker2GameMode::AClicker2GameMode()
 {
@@ -40,15 +44,52 @@ AClicker2GameMode::AClicker2GameMode()
 	}
 }
 
+void AClicker2GameMode::BeginPlay()
+{
+	Super::BeginPlay();
+
+	for (IInterface_PostProcessVolume* postProcessVolumeInterface : GetWorld()->PostProcessVolumes)
+	{
+		APostProcessVolume* postProcessVolume = dynamic_cast<APostProcessVolume*>(
+			postProcessVolumeInterface->_getUObject());
+
+		const FPostProcessSettings* settings = postProcessVolume->GetProperties().Settings;
+		UMaterialInstance* instance = nullptr;
+
+		for (auto blendable : settings->WeightedBlendables.Array)
+		{
+			if (blendable.Object && blendable.Object->GetName().Equals(
+				TEXT("PPI_OutlineHighlight")))
+			{
+				instance = Cast<UMaterialInstance>(blendable.Object);
+			}
+		}
+
+		if (instance)
+		{
+			postProcessVolume->Settings.RemoveBlendable(instance);
+			AimOverlayMaterial = UMaterialInstanceDynamic::Create(instance, this);
+			TScriptInterface<IBlendableInterface> blendableInterface;
+			blendableInterface.SetObject(AimOverlayMaterial);
+			postProcessVolume->Settings.AddBlendable(blendableInterface, 1);
+		}
+	}
+}
+
+void AClicker2GameMode::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+}
+
 AItemActor* AClicker2GameMode::SpawnItem(UItem* Item, AActor* spawner)
 {
 	FActorSpawnParameters params;
-	return SpawnItem(Item ,spawner->GetTransform().GetLocation(), FRotator::ZeroRotator, params);
+	return SpawnItem(Item, spawner->GetTransform().GetLocation(), FRotator::ZeroRotator, params);
 }
 
-AItemActor* AClicker2GameMode::SpawnItem(UItem* Item, FVector position, FRotator rotation,FActorSpawnParameters params)
+AItemActor* AClicker2GameMode::SpawnItem(UItem* Item, FVector position, FRotator rotation, FActorSpawnParameters params)
 {
-	auto item = GetWorld()->SpawnActor<AItemActor>(position,rotation,params);
+	auto item = GetWorld()->SpawnActor<AItemActor>(position, rotation, params);
 	item->Setup(Item);
 	return item;
 }
@@ -58,4 +99,9 @@ UItem* AClicker2GameMode::SpawnItem(UItemData* Item)
 	auto item = NewObject<UItem>();
 	item->Setup(Item);
 	return item;
+}
+
+void AClicker2GameMode::SetAimPostProcessingOverlayValue(float Value)
+{
+	AimOverlayMaterial->SetScalarParameterValue(FName(TEXT("ColorLerpValue")), Value);
 }

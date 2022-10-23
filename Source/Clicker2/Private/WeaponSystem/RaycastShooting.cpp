@@ -4,6 +4,8 @@
 #include "WeaponSystem\RaycastShooting.h"
 
 #include "macros.h"
+#include "Engine\PostProcessVolume.h"
+#include "GameMode\Clicker2GameMode.h"
 #include "Player\Clicker2Character.h"
 
 URaycastShooting::URaycastShooting()
@@ -36,15 +38,24 @@ void URaycastShooting::Aim(float TickDelta)
 		if (target == CurrentAimed)
 		{
 			HitPossibility += TickDelta;
+			GetWorld()->GetAuthGameMode<AClicker2GameMode>()->SetAimPostProcessingOverlayValue(HitPossibility);
 		}
 		else
 		{
+			CurrentAimed->GetMesh()->SetRenderCustomDepth(false);
+
 			CurrentAimed = target;
+			CurrentAimed->GetMesh()->SetRenderCustomDepth(true);
 			HitPossibility = 0;
 		}
 	}
 	else
 	{
+		if (CurrentAimed)
+		{
+			CurrentAimed->GetMesh()->SetRenderCustomDepth(false);
+		}
+		HitPossibility = 0;
 		CurrentAimed = nullptr;
 	}
 
