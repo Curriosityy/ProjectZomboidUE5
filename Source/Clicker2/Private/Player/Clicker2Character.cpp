@@ -1,27 +1,37 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 
-#include "Player/Clicker2Character.h"
-#include "Camera/CameraComponent.h"
-#include "Components/CapsuleComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "GameMode/Clicker2GameMode.h"
-#include "ItemSystem/EquippedItem.h"
-#include "ItemSystem/InventoryComponent.h"
-#include "ItemSystem/Item.h"
-#include "ItemSystem/SearchForPickupColliderComponent.h"
-#include "Player/HPComponent.h"
-#include "Player/PlayerMovementComponent.h"
-#include "Player/PlayerStatsComponent.h"
-#include "WeaponSystem/GunItemdata.h"
+#include "Player\Clicker2Character.h"
+#include "Camera\CameraComponent.h"
+#include "Components\CapsuleComponent.h"
+#include "GameFramework\CharacterMovementComponent.h"
+#include "GameFramework\SpringArmComponent.h"
+#include "GameMode\Clicker2GameMode.h"
+#include "ItemSystem\EquippedItem.h"
+#include "ItemSystem\InventoryComponent.h"
+#include "ItemSystem\Item.h"
+#include "ItemSystem\SearchForPickupColliderComponent.h"
+#include "Player\HPComponent.h"
+#include "Player\PlayerMovementComponent.h"
+#include "Player\PlayerStatsComponent.h"
+#include "WeaponSystem\GunItemdata.h"
+
+UMeshComponent* AClicker2Character::GetAimableMesh()
+{
+	return GetMesh();
+}
+
+IDamageable* AClicker2Character::GetDamageable()
+{
+	return this;
+}
 
 AClicker2Character::AClicker2Character(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UPlayerMovementComponent>(CharacterMovementComponentName))
 {
 	// Set size for player capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel2,ECR_Ignore);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Ignore);
 	// Don't rotate character to camera direction
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -51,13 +61,23 @@ AClicker2Character::AClicker2Character(const FObjectInitializer& ObjectInitializ
 
 	InventoryComp = CreateDefaultSubobject<UInventoryComponent>(TEXT("Inventory"));
 	PlayerStatistic = CreateDefaultSubobject<UPlayerStatsComponent>(TEXT("Stats"));
-	
+
 	PickupItemsComponent = CreateDefaultSubobject<USearchForPickupColliderComponent>(TEXT("Pickup"));
 	PickupItemsComponent->SetupAttachment(RootComponent);
 	//PickupCapsule->SetParams(Inventory);
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
+}
+
+void AClicker2Character::DealDamage(int damage, UObject* DamageDealer, bool Critical)
+{
+	ActorHP->DealDamage(damage);
+}
+
+int AClicker2Character::GetHP()
+{
+	return ActorHP->GetCurrentHp();
 }
 
 void AClicker2Character::Tick(float DeltaSeconds)
@@ -84,7 +104,7 @@ void AClicker2Character::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if(TestItem)
+	if (TestItem)
 	{
 		auto testItemData = GetWorld()->GetAuthGameMode<AClicker2GameMode>()->SpawnItem(TestItem.GetDefaultObject());
 		InventoryComp->GetRightHand()->AddItem(nullptr, testItemData);

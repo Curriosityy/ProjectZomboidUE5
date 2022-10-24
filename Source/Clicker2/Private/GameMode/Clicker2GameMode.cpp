@@ -69,9 +69,7 @@ void AClicker2GameMode::BeginPlay()
 		{
 			postProcessVolume->Settings.RemoveBlendable(instance);
 			AimOverlayMaterial = UMaterialInstanceDynamic::Create(instance, this);
-			TScriptInterface<IBlendableInterface> blendableInterface;
-			blendableInterface.SetObject(AimOverlayMaterial);
-			postProcessVolume->Settings.AddBlendable(blendableInterface, 1);
+			postProcessVolume->Settings.AddBlendable(AimOverlayMaterial.Get(), 1);
 		}
 	}
 }

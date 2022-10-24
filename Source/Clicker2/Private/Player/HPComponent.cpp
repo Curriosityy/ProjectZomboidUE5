@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Player/HPComponent.h"
-#include "Components/WidgetComponent.h"
-#include "UI/HPBar.h"
+#include "Player\HPComponent.h"
+#include "Components\WidgetComponent.h"
+#include "UI\HPBar.h"
 
 // Sets default values for this component's properties
 UHPComponent::UHPComponent()
@@ -117,4 +117,9 @@ int UHPComponent::Heal(int HPToAdd)
 	CurrentHp += healed;
 
 	return healed;
+}
+
+void UHPComponent::DealDamage(int Damage)
+{
+	CurrentHp -= Damage;
 }

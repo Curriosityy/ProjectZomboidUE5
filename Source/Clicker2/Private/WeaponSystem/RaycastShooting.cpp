@@ -4,9 +4,14 @@
 #include "WeaponSystem\RaycastShooting.h"
 
 #include "macros.h"
-#include "Engine\PostProcessVolume.h"
+#include "AttackSystem\Aimable.h"
+#include "AttackSystem\IDamageable.h"
 #include "GameMode\Clicker2GameMode.h"
+#include "ItemSystem\EquippedItem.h"
+#include "ItemSystem\InventoryComponent.h"
+#include "ItemSystem\Item.h"
 #include "Player\Clicker2Character.h"
+#include "WeaponSystem\WeaponItemData.h"
 
 URaycastShooting::URaycastShooting()
 {
@@ -33,23 +38,29 @@ void URaycastShooting::Aim(float TickDelta)
 	GetWorld()->LineTraceSingleByChannel(Hit, position, position + (forward * distance), ECC_GameTraceChannel1,
 	                                     params);
 
-	if (AClicker2Character* target = dynamic_cast<AClicker2Character*>(Hit.GetActor()))
+	if (IAimable* target = dynamic_cast<IAimable*>(Hit.GetActor()))
 	{
-		if (target == CurrentAimed)
+		if (target == CurrentAimed.GetInterface())
 		{
 			HitPossibility += TickDelta;
+
+			if (HitPossibility >= 1)
+			{
+				HitPossibility = 1;
+			}
+
 			GetWorld()->GetAuthGameMode<AClicker2GameMode>()->SetAimPostProcessingOverlayValue(HitPossibility);
 		}
 		else
 		{
-			SetCurrentAimed(target);
+			SetCurrentTarget(target);
 			HitPossibility = 0;
 		}
 	}
 	else
 	{
 		HitPossibility = 0;
-		SetCurrentAimed(nullptr);
+		SetCurrentTarget(nullptr);
 	}
 
 	DrawDebugLine(GetWorld(), position, position + (forward * distance), FColor::Red);
@@ -66,35 +77,34 @@ void URaycastShooting::TickComponent(float DeltaTime, ELevelTick TickType,
 	}
 }
 
-void URaycastShooting::SetCurrentAimed(AClicker2Character* NewAimed)
+void URaycastShooting::SetCurrentTarget(IAimable* NewAimed)
 {
 	if (CurrentAimed)
 	{
-		CurrentAimed->GetMesh()->SetRenderCustomDepth(false);
+		CurrentAimed->GetAimableMesh()->SetRenderCustomDepth(false);
 	}
 
-	CurrentAimed = NewAimed;
+
+	CurrentAimed = NewAimed ? NewAimed->_getUObject() : nullptr;
 
 	if (CurrentAimed)
 	{
-		CurrentAimed->GetMesh()->SetRenderCustomDepth(true);
+		CurrentAimed->GetAimableMesh()->SetRenderCustomDepth(true);
 	}
 }
 
 
 void URaycastShooting::StartAim()
 {
-	PRINT_DEBUG("URaycastShooting::StartAim");
 	HitPossibility = 0;
 	bIsAiming = true;
 }
 
 void URaycastShooting::StopAim()
 {
-	PRINT_DEBUG("URaycastShooting::StopAim");
 	HitPossibility = 0;
 	bIsAiming = false;
-	SetCurrentAimed(nullptr);
+	SetCurrentTarget(nullptr);
 }
 
 void URaycastShooting::Attack()
@@ -108,7 +118,17 @@ void URaycastShooting::Attack()
 
 	if (randomHit <= HitPossibility)
 	{
-		//ShootRaycast
+		bool isCritical = FMath::RandRange(HitPossibility, 1.0f) >= 0.9f;
+
+		UWeaponItemData* weaponData = Cast<UWeaponItemData>(
+			Owner->GetInventoryComponent()->GetRightHand()->GetItem()->GetItemData());
+
+		float damage = weaponData->GetDamage() * (isCritical
+			                                          ? weaponData->GetCriticalMultiplier()
+			                                          : 1);
+		CurrentAimed->GetDamageable()->DealDamage(damage,
+		                                          Owner,
+		                                          isCritical);
 	}
 
 	PRINT_DEBUG("URaycastShooting::Attack");

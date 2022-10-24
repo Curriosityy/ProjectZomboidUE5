@@ -7,6 +7,7 @@
 #include "RaycastShooting.generated.h"
 
 class AClicker2Character;
+class IAimable;
 /**
  * 
  */
@@ -16,7 +17,6 @@ class CLICKER2_API URaycastShooting : public UWeaponAttackComponent
 	GENERATED_BODY()
 
 	UPROPERTY()
-	;
 	bool bIsAiming;
 
 protected:
@@ -28,9 +28,9 @@ protected:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 	UPROPERTY(Transient, NonTransactional)
-	TObjectPtr<AClicker2Character> CurrentAimed;
+	TScriptInterface<IAimable> CurrentAimed;
 
-	void SetCurrentAimed(AClicker2Character* NewAimed);
+	void SetCurrentTarget(IAimable* NewAimed);
 
 	UPROPERTY(meta=(ClampMax = "1", ClampMin="0"))
 	float HitPossibility;

@@ -20,6 +20,7 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+
 	void RegenerateHP(float DeltaTime);
 
 public:
@@ -41,6 +42,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	int Heal(int HPToAdd);
+
+	UFUNCTION(BlueprintCallable)
+	void DealDamage(int damage);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "HPValues")

@@ -1,7 +1,22 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "WeaponSystem/WeaponItemData.h"
+#include "WeaponSystem\WeaponItemData.h"
+
+float UWeaponItemData::GetDamage() const
+{
+	return Damage;
+}
+
+float UWeaponItemData::GetCriticalMultiplier() const
+{
+	return CriticalMultiplier;
+}
+
+WeaponAttackType UWeaponItemData::GetAttackType() const
+{
+	return AttackType;
+}
 
 TSubclassOf<UWeaponAttackComponent> UWeaponItemData::GetWeaponAttackComponent() const
 {
@@ -10,8 +25,10 @@ TSubclassOf<UWeaponAttackComponent> UWeaponItemData::GetWeaponAttackComponent() 
 
 UWeaponItemData::UWeaponItemData()
 {
-	Range=1;
-	TwoHanded=true;
+	Range = 1;
+	Damage = 10;
+	CriticalMultiplier = 10;
+	TwoHanded = true;
 }
 
 float UWeaponItemData::GetRange() const

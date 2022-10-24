@@ -38,6 +38,14 @@ class CLICKER2_API UWeaponItemData : public UItemData
 	UPROPERTY(EditDefaultsOnly)
 	WeaponAttackType AttackType;
 
+public:
+	float GetDamage() const;
+
+	float GetCriticalMultiplier() const;
+
+	WeaponAttackType GetAttackType() const;
+
+private:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UWeaponAttackComponent> WeaponAttackComponent;
 
