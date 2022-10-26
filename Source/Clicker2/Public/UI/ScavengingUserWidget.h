@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "MainGameWindowUserWidget.h"
-#include "Blueprint/UserWidget.h"
+#include "Blueprint\UserWidget.h"
 #include "ScavengingUserWidget.generated.h"
 
 class IItemHolder;
@@ -33,23 +33,28 @@ class CLICKER2_API UScavengingUserWidget : public UMainGameWindowUserWidget
 	//Contain IItemHolders
 	UPROPERTY(Transient, NonTransactional)
 	TArray<TScriptInterface<IItemHolder>> ItemHolders;
-	
-	int CurrentWidgetIndex = 0;
 
+	int CurrentScavengingWindow = 0;
+
+private:
 	UFUNCTION()
 	void SwitchScavengingTab(UButton* Sender);
+
 	void RebuildItemHoldersList();
 
 	UFUNCTION()
 	void OnOverlappedContainersChanged(USearchForPickupColliderComponent* sender);
-	
+
 	void RefreshButtons();
 
 	virtual void Show() override;
 
 	virtual void NativeConstruct() override;
+
 public:
+	int GetCurrentScavengingWindow() const;
 
 	void Show(USearchForPickupColliderComponent* pickupComponent);
+
 	void RefreshItemHolderWidget();
 };

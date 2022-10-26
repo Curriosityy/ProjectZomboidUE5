@@ -4,11 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "ItemUsability.generated.h"
+class UItem;
+class AClicker2Character;
+class IItemHolder;
 
 /**
  * 
  */
-UCLASS(Abstract,Blueprintable,NotPlaceable)
+UCLASS(Abstract, Blueprintable, NotPlaceable)
 class CLICKER2_API UItemUsability : public UObject
 {
 	GENERATED_BODY()
@@ -19,12 +22,12 @@ private:
 
 protected:
 	//Method to implement when, want to write c++ usability of item
-	virtual void Use(class AClicker2Character* user) PURE_VIRTUAL(UItemUsability,);
+	virtual void Use(AClicker2Character* user, IItemHolder* ItemHolder, UItem* Item) PURE_VIRTUAL(UItemUsability,);
 
 	//Method to implement 
-	UFUNCTION(BlueprintImplementableEvent)
-	void BPUse(class AClicker2Character* user);
+	//UFUNCTION(BlueprintImplementableEvent)
+	//void BPUse(AClicker2Character* user, IItemHolder* ItemHolder, UItem* Item);
 
 public:
-	virtual void UseItem(class AClicker2Character* user) final;
+	virtual void UseItem(AClicker2Character* user, IItemHolder* ItemHolder, UItem* Item);
 };

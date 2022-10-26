@@ -1,26 +1,32 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UI/ScavengingUserWidget.h"
+#include "UI\ScavengingUserWidget.h"
 
-#include "Components/PanelWidget.h"
-#include "ItemSystem/SearchForPickupColliderComponent.h"
-#include "UI/ButtonBroadcastSelf.h"
-#include "UI/ItemHolderWidget.h"
+#include "Components\PanelWidget.h"
+#include "ItemSystem\SearchForPickupColliderComponent.h"
+#include "UI\ButtonBroadcastSelf.h"
+#include "UI\ItemHolderWidget.h"
+
+int UScavengingUserWidget::GetCurrentScavengingWindow() const
+{
+	return CurrentScavengingWindow;
+}
 
 void UScavengingUserWidget::SwitchScavengingTab(UButton* Sender)
 {
-	int oldTab = CurrentWidgetIndex;
-	Buttons.Find(Sender,CurrentWidgetIndex);
+	int oldTab = CurrentScavengingWindow;
+	Buttons.Find(Sender, CurrentScavengingWindow);
 
-	if(oldTab!=CurrentWidgetIndex)
+	if (oldTab != CurrentScavengingWindow)
+	{
 		RefreshItemHolderWidget();
+	}
 }
 
 void UScavengingUserWidget::RebuildItemHoldersList()
 {
 	ItemHolders.Reset();
-	ItemHolders.Add(CurrentPickupComponent);
 
 	for (auto itemHolder : CurrentPickupComponent->GetOverlappedItemsContainers())
 	{
@@ -31,13 +37,13 @@ void UScavengingUserWidget::RebuildItemHoldersList()
 void UScavengingUserWidget::OnOverlappedContainersChanged(
 	USearchForPickupColliderComponent* sender)
 {
-	auto currentItemHolder = ItemHolders[CurrentWidgetIndex];
-	
+	auto currentItemHolder = ItemHolders[CurrentScavengingWindow];
+
 	RebuildItemHoldersList();
 
-	if(!ItemHolders.Find(currentItemHolder,CurrentWidgetIndex))
+	if (!ItemHolders.Find(currentItemHolder, CurrentScavengingWindow))
 	{
-		CurrentWidgetIndex = 0;
+		CurrentScavengingWindow = 0;
 		RefreshItemHolderWidget();
 	}
 
@@ -51,9 +57,9 @@ void UScavengingUserWidget::RefreshButtons()
 		Button->SetVisibility(ESlateVisibility::Hidden);
 	}
 
-	for(int i=0;i<ItemHolders.Num();i++)
+	for (int i = 0; i < ItemHolders.Num(); i++)
 	{
-		if(Buttons.Num()>i)
+		if (Buttons.Num() > i)
 		{
 			Buttons[i]->SetVisibility(ESlateVisibility::Visible);
 		}
@@ -62,7 +68,7 @@ void UScavengingUserWidget::RefreshButtons()
 			auto button = NewObject<UButtonBroadcastSelf>(this);
 			Buttons.Add(button);
 			ButtonsPanel->AddChild(button);
-			button->OnClickedSelf.AddDynamic(this,&UScavengingUserWidget::SwitchScavengingTab);
+			button->OnClickedSelf.AddDynamic(this, &UScavengingUserWidget::SwitchScavengingTab);
 		}
 	}
 }
@@ -80,21 +86,24 @@ void UScavengingUserWidget::NativeConstruct()
 
 void UScavengingUserWidget::Show(USearchForPickupColliderComponent* pickupComponent)
 {
-	if(CurrentPickupComponent != nullptr)
-		CurrentPickupComponent->GetOnItemHoldersChanged()->RemoveDynamic(this,&UScavengingUserWidget::OnOverlappedContainersChanged);
-	
+	if (CurrentPickupComponent != nullptr)
+	{
+		CurrentPickupComponent->GetOnItemHoldersChanged()->RemoveDynamic(
+			this, &UScavengingUserWidget::OnOverlappedContainersChanged);
+	}
+
 	CurrentPickupComponent = pickupComponent;
-	CurrentWidgetIndex = 0;
+	CurrentScavengingWindow = 0;
 	RebuildItemHoldersList();
 	RefreshItemHolderWidget();
 	RefreshButtons();
-	
-	pickupComponent->GetOnItemHoldersChanged()->AddDynamic(this,&UScavengingUserWidget::OnOverlappedContainersChanged);
-	
+
+	pickupComponent->GetOnItemHoldersChanged()->AddDynamic(this, &UScavengingUserWidget::OnOverlappedContainersChanged);
+
 	Show();
 }
 
 void UScavengingUserWidget::RefreshItemHolderWidget()
 {
-	ItemHolderWidget->Setup(ItemHolders[CurrentWidgetIndex].GetInterface());
+	ItemHolderWidget->Setup(ItemHolders[CurrentScavengingWindow].GetInterface());
 }

@@ -1,15 +1,18 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UI/GameHUD.h"
+#include "UI\GameHUD.h"
 
-#include "Blueprint/UserWidget.h"
-#include "Player/Clicker2Character.h"
-#include "UI/DropItemOnGroundUserWidget.h"
-#include "UI/InventoryUserWidget.h"
-#include "UI/ItemWidget.h"
-#include "UI/ScavengingUserWidget.h"
-#include "UI/DropItemOnGroundUserWidget.h"
+#include "Blueprint\UserWidget.h"
+#include "ItemSystem\BasicItemContainer.h"
+#include "ItemSystem\InventoryComponent.h"
+#include "ItemSystem\SearchForPickupColliderComponent.h"
+#include "Player\Clicker2Character.h"
+#include "UI\DropItemOnGroundUserWidget.h"
+#include "UI\DropItemOnGroundUserWidget.h"
+#include "UI\InventoryUserWidget.h"
+#include "UI\ItemWidget.h"
+#include "UI\ScavengingUserWidget.h"
 
 AGameHUD::AGameHUD()
 {
@@ -17,7 +20,7 @@ AGameHUD::AGameHUD()
 
 void AGameHUD::ShowDropItemOnGroundWidget(AClicker2Character* characterToOpenInventory)
 {
-	if(!DropItemOnGround)
+	if (!DropItemOnGround)
 	{
 		DropItemOnGround = CreateWidget<UDropItemOnGroundUserWidget>(GetWorld(), DropItemOnGroundWidget);
 		DropItemOnGround->AddToViewport(-1000);
@@ -29,7 +32,6 @@ void AGameHUD::BeginPlay()
 {
 	Super::BeginPlay();
 	UItemWidget::sIsDragged = false;
-	
 }
 
 void AGameHUD::Tick(float DeltaSeconds)
@@ -45,11 +47,11 @@ void AGameHUD::DrawHUD()
 void AGameHUD::OpenInventoryWindow(AClicker2Character* characterToOpenInventory)
 {
 	ShowDropItemOnGroundWidget(characterToOpenInventory);
-	
+
 	if (Inventory == nullptr)
 	{
 		Inventory = CreateWidget<UInventoryUserWidget>(GetWorld(), InventoryWidget);
-		
+
 		if (Inventory)
 		{
 			MouseBlockers.Add(Inventory);
@@ -66,11 +68,11 @@ void AGameHUD::OpenInventoryWindow(AClicker2Character* characterToOpenInventory)
 void AGameHUD::OpenScavengeWindow(AClicker2Character* characterToOpenInventory)
 {
 	ShowDropItemOnGroundWidget(characterToOpenInventory);
-	
+
 	if (Scavenge == nullptr)
 	{
 		Scavenge = CreateWidget<UScavengingUserWidget>(GetWorld(), ScavengeWidget);
-		
+
 		if (Scavenge)
 		{
 			MouseBlockers.Add(Scavenge);
@@ -87,13 +89,36 @@ void AGameHUD::OpenScavengeWindow(AClicker2Character* characterToOpenInventory)
 bool AGameHUD::IsMouseOverBlockUI()
 {
 	bool mouseOver = false;
-	
+
 	for (auto Element : MouseBlockers)
 	{
 		mouseOver |= Element->IsMouseOver();
 	}
 
 	mouseOver |= UItemWidget::IsDragged();
-	
+
 	return mouseOver;
+}
+
+void AGameHUD::MoveItemBetweenInventoryAndScavengeItemHolders(IItemHolder* CurrentItemHolder, UItem* ItemToMove)
+{
+	auto player = Cast<AClicker2Character>(PlayerOwner->GetPawn());
+	bool isCurrentItemHolderInventory = player->GetInventoryComponent()->GetHeldItems() == CurrentItemHolder;
+
+	if (isCurrentItemHolderInventory)
+	{
+		int index = 0;
+
+		if (Scavenge != nullptr)
+		{
+			index = Scavenge->GetCurrentScavengingWindow();
+		}
+
+		player->GetSearchItemComponent()->GetOverlappedItemsContainers()[index]->
+			AddItem(CurrentItemHolder, ItemToMove);
+	}
+	else
+	{
+		player->GetInventoryComponent()->GetHeldItems()->AddItem(CurrentItemHolder, ItemToMove);
+	}
 }

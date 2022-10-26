@@ -11,6 +11,7 @@
 #include "ItemSystem\ItemHolder.h"
 #include "ItemSystem\ItemDatas\ItemData.h"
 #include "Player\Clicker2Character.h"
+#include "UI\GameHUD.h"
 
 TObjectPtr<UItem> UItemWidget::GetHeldItem() const
 {
@@ -116,12 +117,21 @@ FReply UItemWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const F
 	{
 		if (InMouseEvent.GetEffectingButton() == EKeys::RightMouseButton)
 		{
-			HeldItem->Use(GetOwningPlayer()->GetPawn<AClicker2Character>());
+			HeldItem->Use(GetOwningPlayer()->GetPawn<AClicker2Character>(), ItemHolder.GetInterface());
 		}
 		else if (InMouseEvent.GetEffectingButton() == EKeys::LeftMouseButton)
 		{
-			reply.DetectDrag(TakeWidget(), EKeys::LeftMouseButton);
-			reply.Handled();
+			if (GetOwningPlayer()->IsInputKeyDown(EKeys::LeftShift) || GetOwningPlayer()->IsInputKeyDown(
+				EKeys::RightShift))
+			{
+				Cast<AGameHUD>(GetOwningPlayer()->GetHUD())->MoveItemBetweenInventoryAndScavengeItemHolders(
+					ItemHolder.GetInterface(), HeldItem);
+			}
+			else
+			{
+				reply.DetectDrag(TakeWidget(), EKeys::LeftMouseButton);
+				reply.Handled();
+			}
 		}
 	}
 

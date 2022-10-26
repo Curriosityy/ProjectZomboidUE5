@@ -36,21 +36,23 @@ class CLICKER2_API UInventoryUserWidget : public UMainGameWindowUserWidget
 
 	UPROPERTY(meta =(BindWidget))
 	TObjectPtr<UPlayerStatsUserWidget> PlayerStats;
-	
+
 	UPROPERTY(meta =(BindWidget))
 	TObjectPtr<UItemHolderWidget> ItemHolder;
 
 public:
 	virtual void Show(AClicker2Character* playerToShow);
-	
+
 	virtual void Hide() override;
 
 	virtual void NativeConstruct() override;
-	
+
 	UFUNCTION()
 	void ShowEqTab();
+
 	UFUNCTION()
 	void ShowStatTab();
+
 	UFUNCTION()
 	void ShowItemsTab();
 

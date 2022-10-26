@@ -5,6 +5,7 @@
 
 #include "macros.h"
 #include "AttackSystem\Aimable.h"
+#include "AttackSystem\DealDamageHelper.h"
 #include "AttackSystem\IDamageable.h"
 #include "GameMode\Clicker2GameMode.h"
 #include "ItemSystem\EquippedItem.h"
@@ -109,27 +110,13 @@ void URaycastShooting::StopAim()
 
 void URaycastShooting::Attack()
 {
-	if (!bIsAiming)
+	if (!bIsAiming || !CurrentAimed)
 	{
 		return;
 	}
 
-	float randomHit = FMath::RandRange(0.f, 1.0f);
+	UWeaponItemData* weaponData = Cast<UWeaponItemData>(
+		Owner->GetInventoryComponent()->GetRightHand()->GetItem()->GetItemData());
 
-	if (randomHit <= HitPossibility)
-	{
-		bool isCritical = FMath::RandRange(HitPossibility, 1.0f) >= 0.9f;
-
-		UWeaponItemData* weaponData = Cast<UWeaponItemData>(
-			Owner->GetInventoryComponent()->GetRightHand()->GetItem()->GetItemData());
-
-		float damage = weaponData->GetDamage() * (isCritical
-			                                          ? weaponData->GetCriticalMultiplier()
-			                                          : 1);
-		CurrentAimed->GetDamageable()->DealDamage(damage,
-		                                          Owner,
-		                                          isCritical);
-	}
-
-	PRINT_DEBUG("URaycastShooting::Attack");
+	DealDamageHelper::BaseDealDamage(CurrentAimed->GetDamageable(), Owner, weaponData, HitPossibility);
 }

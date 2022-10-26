@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "Blueprint\UserWidget.h"
 #include "ItemHolderWidget.generated.h"
 
 class UButton;
@@ -24,7 +24,7 @@ private:
 	UPanelWidget* ItemsPanel;
 
 	UPROPERTY(meta=(BindWidget))
-	 UPanelWidget* ButtonsPanel;
+	UPanelWidget* ButtonsPanel;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UItemWidget> ItemWidget;
@@ -40,7 +40,7 @@ private:
 
 	UPROPERTY(EditAnywhere, meta=(UIMin="1"))
 	int ItemsOnPage;
-	
+
 	UPROPERTY(EditAnywhere)
 	int TestItemCount;
 
@@ -49,26 +49,31 @@ private:
 
 	UPROPERTY(Transient, NonTransactional)
 	TScriptInterface<IItemHolder> CurrentItemHolder;
-	
+
 protected:
 	UFUNCTION()
 	void OnInventoryUpdated(TScriptInterface<IItemHolder> ChangedItemHolder);
-	
+
 	int32 GetMaxPageNumber();
+
 	void RefreshInventoryUI();
-	
+
 	UFUNCTION()
 	void OnPaginationClick(UButton* sender);
-	
+
 	void SetupPaginationButtons();
 
-	virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
-	
+	virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
+	                          UDragDropOperation* InOperation) override;
+
 public:
 	void Setup(IItemHolder* inventoryHolder);
+
 	UItemHolderWidget(const FObjectInitializer& ObjectInitializer);
+
 	virtual void NativeConstruct() override;
+
 	virtual void NativePreConstruct() override;
 
-	
+	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 };

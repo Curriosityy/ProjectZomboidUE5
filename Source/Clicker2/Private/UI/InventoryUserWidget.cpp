@@ -1,16 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UI/InventoryUserWidget.h"
+#include "UI\InventoryUserWidget.h"
 
-#include "Components/Button.h"
-#include "Components/WidgetSwitcher.h"
-#include "ItemSystem/BasicItemContainer.h"
-#include "ItemSystem/InventoryComponent.h"
-#include "Player/Clicker2Character.h"
-#include "UI/EquipmentUserWidget.h"
-#include "UI/PlayerStatsUserWidget.h"
-#include "UI/ItemHolderWidget.h"
+#include "Components\Button.h"
+#include "Components\WidgetSwitcher.h"
+#include "ItemSystem\BasicItemContainer.h"
+#include "ItemSystem\InventoryComponent.h"
+#include "Player\Clicker2Character.h"
+#include "UI\EquipmentUserWidget.h"
+#include "UI\ItemHolderWidget.h"
+#include "UI\PlayerStatsUserWidget.h"
 
 void UInventoryUserWidget::Show(AClicker2Character* playerToShow)
 {
@@ -35,7 +35,6 @@ void UInventoryUserWidget::NativeConstruct()
 
 void UInventoryUserWidget::ShowEqTab()
 {
-	
 	WidgetSwitcher->SetActiveWidget(Cast<UWidget>(Equipment));
 }
 
