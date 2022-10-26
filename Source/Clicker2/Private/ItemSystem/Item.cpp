@@ -2,8 +2,8 @@
 
 
 #include "ItemSystem\Item.h"
-#include "ItemSystem\ItemUsability.h"
 #include "ItemSystem\ItemDatas\ItemData.h"
+#include "ItemSystem\ItemUsability\ItemUsability.h"
 
 void UItem::Setup(UItemData* itemData)
 {

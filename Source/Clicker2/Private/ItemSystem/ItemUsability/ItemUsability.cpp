@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ItemSystem\ItemUsability.h"
+#include "ItemSystem\ItemUsability\ItemUsability.h"
 
 #include "ItemSystem\ItemHolder.h"
 

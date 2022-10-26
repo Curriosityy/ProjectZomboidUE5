@@ -3,15 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "WearItemAsMain.h"
-#include "ItemSystem\ItemUsability.h"
-#include "WearItemAsMainWeapon.generated.h"
+#include "ItemSystem\ItemUsability\WearItemAsMain.h"
+#include "MyWearItemAsMainBackpack.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class CLICKER2_API UWearItemAsMainWeapon : public UWearItemAsMain
+class CLICKER2_API UMyWearItemAsMainBackpack : public UWearItemAsMain
 {
 	GENERATED_BODY()
 

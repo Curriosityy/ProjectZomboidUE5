@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ItemSystem\ItemUsability.h"
+#include "ItemSystem\ItemUsability\ItemUsability.h"
 #include "WearItemAsMain.generated.h"
 class UEquippedItem;
 

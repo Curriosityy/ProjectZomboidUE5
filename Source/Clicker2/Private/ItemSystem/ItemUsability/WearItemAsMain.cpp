@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ItemSystem\WearItemAsMain.h"
+#include "ItemSystem\ItemUsability\WearItemAsMain.h"
 
 #include "ItemSystem\BasicItemContainer.h"
 #include "ItemSystem\EquippedItem.h"
