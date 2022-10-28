@@ -8,6 +8,7 @@
 #include "GameFramework\Character.h"
 #include "Clicker2Character.generated.h"
 
+class ULineOfSightComponent;
 class UGunItemdata;
 class USearchForPickupColliderComponent;
 class UPlayerStatsComponent;
@@ -64,6 +65,10 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Loot component", meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<USearchForPickupColliderComponent> PickupItemsComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "Line of sight componenteeeeeee", meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<ULineOfSightComponent> LineOfSightComponentt;
+
 
 	UPROPERTY(EditDefaultsOnly, Category = "Player")
 	TSubclassOf<UGunItemdata> TestItem;

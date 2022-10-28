@@ -11,6 +11,7 @@
 #include "ItemSystem\InventoryComponent.h"
 #include "ItemSystem\Item.h"
 #include "ItemSystem\SearchForPickupColliderComponent.h"
+#include "LineOfSightSystem\LineOfSightComponent.h"
 #include "Player\HPComponent.h"
 #include "Player\PlayerMovementComponent.h"
 #include "Player\PlayerStatsComponent.h"
@@ -64,7 +65,9 @@ AClicker2Character::AClicker2Character(const FObjectInitializer& ObjectInitializ
 
 	PickupItemsComponent = CreateDefaultSubobject<USearchForPickupColliderComponent>(TEXT("Pickup"));
 	PickupItemsComponent->SetupAttachment(RootComponent);
-	//PickupCapsule->SetParams(Inventory);
+
+	LineOfSightComponentt = CreateDefaultSubobject<ULineOfSightComponent>(TEXT("LineOfSightComp"));
+
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
