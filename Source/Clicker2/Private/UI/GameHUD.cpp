@@ -6,6 +6,7 @@
 #include "Blueprint\UserWidget.h"
 #include "ItemSystem\BasicItemContainer.h"
 #include "ItemSystem\InventoryComponent.h"
+#include "ItemSystem\ItemHelper.h"
 #include "ItemSystem\SearchForPickupColliderComponent.h"
 #include "Player\Clicker2Character.h"
 #include "UI\DropItemOnGroundUserWidget.h"
@@ -114,11 +115,14 @@ void AGameHUD::MoveItemBetweenInventoryAndScavengeItemHolders(IItemHolder* Curre
 			index = Scavenge->GetCurrentScavengingWindow();
 		}
 
-		player->GetSearchItemComponent()->GetOverlappedItemsContainers()[index]->
-			AddItem(ItemToMove);
+		ItemHelper::AddItemToNewHolder(CurrentItemHolder,
+		                               player->GetSearchItemComponent()->GetOverlappedItemsContainers()[index],
+		                               ItemToMove);
 	}
 	else
 	{
-		player->GetInventoryComponent()->GetHeldItems()->AddItem(ItemToMove);
+		ItemHelper::AddItemToNewHolder(CurrentItemHolder,
+		                               player->GetInventoryComponent()->GetHeldItems(),
+		                               ItemToMove);
 	}
 }

@@ -45,7 +45,6 @@ bool UBasicItemContainer::AddItem(UItem* item)
 
 	if (CanAddItem(item))
 	{
-		item->SetNewOwner(this);
 		ItemsHeld.Add(item);
 		added = true;
 		OnInventoryUpdated.Broadcast(this);

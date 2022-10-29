@@ -42,7 +42,6 @@ bool UEquippedItem::AddItem(UItem* item)
 {
 	if (CanAddItem(item))
 	{
-		item->SetNewOwner(this);
 		Item = item;
 		OnEquippedItemUpdated.Broadcast(this);
 

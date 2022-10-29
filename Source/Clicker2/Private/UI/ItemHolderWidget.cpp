@@ -8,6 +8,7 @@
 #include "Components\Button.h"
 #include "Components\UniformGridPanel.h"
 #include "ItemSystem\InventoryComponent.h"
+#include "ItemSystem\ItemHelper.h"
 #include "ItemSystem\ItemHolder.h"
 #include "UI\ButtonBroadcastSelf.h"
 #include "UI\ItemWidget.h"
@@ -125,7 +126,9 @@ bool UItemHolderWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDro
 				}
 				else
 				{
-					CurrentItemHolder->AddItem(sender->GetHeldItem());
+					ItemHelper::AddItemToNewHolder(sender->GetItemHolder(),
+					                               CurrentItemHolder.GetInterface(),
+					                               sender->GetHeldItem());
 				}
 			}
 

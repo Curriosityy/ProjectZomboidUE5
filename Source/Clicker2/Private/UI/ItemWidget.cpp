@@ -8,6 +8,7 @@
 #include "Components\Image.h"
 #include "Components\TextBlock.h"
 #include "ItemSystem\Item.h"
+#include "ItemSystem\ItemHelper.h"
 #include "ItemSystem\ItemHolder.h"
 #include "ItemSystem\ItemDatas\ItemData.h"
 #include "Player\Clicker2Character.h"
@@ -181,7 +182,7 @@ bool UItemWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent
 				}
 				else
 				{
-					ItemHolder->AddItem(payload->HeldItem);
+					ItemHelper::AddItemToNewHolder(payload->GetItemHolder(), GetItemHolder(), payload->GetHeldItem());
 				}
 			}
 		}

@@ -27,7 +27,6 @@ bool AItemHolderActor::CanAddItem(UItem* item)
 
 bool AItemHolderActor::AddItem(UItem* item)
 {
-	item->SetNewOwner(this);
 	HeldItems.Add(item);
 	OnInventoryUpdated.Broadcast(this);
 	return true;

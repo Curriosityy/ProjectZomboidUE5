@@ -30,11 +30,6 @@ UItemData* UItem::GetItemData()
 
 void UItem::SetNewOwner(IItemHolder* NewOwner)
 {
-	if (Holder)
-	{
-		Holder->RemoveItem(this);
-	}
-
 	Holder = NewOwner->_getUObject();
 }
 

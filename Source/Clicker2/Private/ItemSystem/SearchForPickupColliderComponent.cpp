@@ -36,7 +36,6 @@ bool USearchForPickupColliderComponent::CanAddItem(UItem* item)
 
 bool USearchForPickupColliderComponent::AddItem(UItem* item)
 {
-	item->SetNewOwner(this);
 	auto spawnedItem = GetWorld()->GetAuthGameMode<AClicker2GameMode>()->SpawnItem(item, GetOwner());
 	return true;
 }
