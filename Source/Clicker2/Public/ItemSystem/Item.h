@@ -17,7 +17,6 @@ class CLICKER2_API UItem : public UObject
 {
 	GENERATED_BODY()
 
-private:
 	UPROPERTY()
 	float Durability;
 
@@ -28,6 +27,8 @@ private:
 	TScriptInterface<IItemHolder> Holder;
 
 public:
+	void SetNewOwner(IItemHolder* NewOwner);
+
 	IItemHolder* GetHolder() const;
 
 	void Setup(UItemData* itemData);
@@ -35,8 +36,6 @@ public:
 	void Use(AClicker2Character* user, IItemHolder* ItemHolder);
 
 	UItemData* GetItemData();
-
-	void SetNewOwner(IItemHolder* NewOwner);
 
 	template <class T>
 	T* GetItemData();

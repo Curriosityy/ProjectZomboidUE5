@@ -30,6 +30,10 @@ class CLICKER2_API IItemHolder
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 
 public:
+	virtual bool AddItem(UItem* item) PURE_VIRTUAL(AddItem, return false;);
+
+	virtual bool RemoveItem(UItem* item) PURE_VIRTUAL(RemoveItem, return false;);
+
 	virtual int GetSize() PURE_VIRTUAL(GetSize, return 0;);
 
 	virtual EItemType GetHeldItemType() PURE_VIRTUAL(GetHeldItemType, return static_cast<EItemType>(0););
@@ -39,10 +43,6 @@ public:
 	bool CanHeldItemType(EItemType itemType) { return (itemType & GetHeldItemType()) != EItemType::None; }
 
 	virtual bool CanAddItem(UItem* item) PURE_VIRTUAL(CanAddItem, return false;);
-
-	virtual bool AddItem(UItem* item) PURE_VIRTUAL(AddItem, return false;);
-
-	virtual bool RemoveItem(UItem* item) PURE_VIRTUAL(RemoveItem, return false;);
 
 	virtual float GetWeightOfHeldItems() PURE_VIRTUAL(IItemHolder, return 0.f;);
 

@@ -9,6 +9,8 @@ bool ItemHelper::AddItemToNewHolder(IItemHolder* OldHolder, IItemHolder* NewHold
 		if (NewHolder->AddItem(Item))
 		{
 			Item->SetNewOwner(NewHolder);
+
+			return true;
 		}
 	}
 
