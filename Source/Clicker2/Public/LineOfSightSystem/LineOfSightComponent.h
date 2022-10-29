@@ -51,9 +51,10 @@ public:
 protected:
 	FCanvasUVTri GenerateTriangle();
 
-	void GenerateEndPointsList(TArray<FVector>* Array, float RotationStepAngle, FVector RotateFromVector);
+	void GenerateEndPointsList(TArray<FVector>* Array, float RotationStepAngle, FVector RotateFromVector, int Ticks,
+	                           float RayDistance);
 
-	void GenerateTrianglesArray(TArray<FCanvasUVTri>* Array, const FVector2D& Vector2, TArray<FVector>* Vectors);
+	void GenerateTrianglesArray(TArray<FCanvasUVTri>* Array, const FVector2D& CenterOfTriangles, TArray<FVector>* Vectors, bool looped);
 
 	UFUNCTION()
 	void DrawLineOfSight(UCanvas* Canvas, int32 Width, int32 Height);

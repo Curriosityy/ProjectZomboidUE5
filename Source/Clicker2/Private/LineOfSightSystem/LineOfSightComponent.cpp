@@ -20,7 +20,9 @@ ULineOfSightComponent::ULineOfSightComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 	SightLineDistance = 1000;
 	SightAngle = 45;
-	RaysCount = 90;
+	RaysCount = 180;
+	OutOfSightDistance = 225;
+	RaysCountOutOfSightAngle = 180;
 	ShouldTick = true;
 	// ...
 }
@@ -31,7 +33,7 @@ FCanvasUVTri ULineOfSightComponent::GenerateTriangle()
 }
 
 void ULineOfSightComponent::GenerateEndPointsList(TArray<FVector>* Array, float RotationStepAngle,
-                                                  FVector RotateFromVector)
+                                                  FVector RotateFromVector, int Ticks, float RayDistance)
 {
 	FVector impactPoint, endRotation, endPosition, position;
 	position = GetOwner()->GetActorTransform().GetLocation();
@@ -39,10 +41,10 @@ void ULineOfSightComponent::GenerateEndPointsList(TArray<FVector>* Array, float 
 	FCollisionQueryParams Params = FCollisionQueryParams::DefaultQueryParam;
 	Params.AddIgnoredActor(GetOwner());
 
-	for (int i = 0; i < RaysCount; i++)
+	for (int i = 0; i < Ticks; i++)
 	{
 		endRotation = RotateFromVector.RotateAngleAxis(RotationStepAngle * i, GetOwner()->GetActorUpVector());
-		endPosition = position + endRotation * SightLineDistance;
+		endPosition = position + endRotation * RayDistance;
 		if (GetWorld()->LineTraceSingleByChannel(result, position, endPosition,
 		                                         ECC_GameTraceChannel4, Params))
 		{
@@ -57,7 +59,7 @@ void ULineOfSightComponent::GenerateEndPointsList(TArray<FVector>* Array, float 
 }
 
 void ULineOfSightComponent::GenerateTrianglesArray(TArray<FCanvasUVTri>* Array, const FVector2D& CenterOfTriangles,
-                                                   TArray<FVector>* Vectors)
+                                                   TArray<FVector>* Vectors, bool looped)
 {
 	FCanvasUVTri baseTri;
 	FVector2D actorPosition = static_cast<FVector2D>(GetOwner()->GetTransform().GetLocation());
@@ -70,7 +72,15 @@ void ULineOfSightComponent::GenerateTrianglesArray(TArray<FCanvasUVTri>* Array, 
 	{
 		baseTri.V1_Pos = CenterOfTriangles + (static_cast<FVector2D>((*Vectors)[i]) - actorPosition);
 		baseTri.V2_Pos = CenterOfTriangles + (static_cast<FVector2D>((*Vectors)[i + 1]) - actorPosition);
-		Array->Add(FCanvasUVTri(baseTri));
+		Array->Add(baseTri);
+	}
+
+	if (looped)
+	{
+		baseTri.V1_Pos = CenterOfTriangles + (static_cast<FVector2D>((*Vectors)[Vectors->Num() - 1]) - actorPosition);
+		baseTri.V2_Pos = CenterOfTriangles + (static_cast<FVector2D>((*Vectors)[0]) - actorPosition);
+
+		Array->Add(baseTri);
 	}
 }
 
@@ -81,9 +91,14 @@ void ULineOfSightComponent::DrawLineOfSight(UCanvas* Canvas, int32 Width, int32 
 
 	FVector leftEnd = GetOwner()->GetActorForwardVector().RotateAngleAxis(
 		-(SightAngle / 2), GetOwner()->GetActorUpVector());
+	FVector rightEnd = GetOwner()->GetActorForwardVector().RotateAngleAxis(
+		(SightAngle / 2), GetOwner()->GetActorUpVector());
 
-	GenerateEndPointsList(&endPoints, SightAngle / RaysCount, leftEnd);
-	GenerateTrianglesArray(&triangles, FVector2D(Width / 2, Height / 2), &endPoints);
+	GenerateEndPointsList(&endPoints, SightAngle / RaysCount, leftEnd, RaysCount, SightLineDistance);
+	GenerateEndPointsList(&endPoints, (360 - SightAngle) / RaysCountOutOfSightAngle, rightEnd, RaysCountOutOfSightAngle,
+	                      OutOfSightDistance);
+
+	GenerateTrianglesArray(&triangles, FVector2D(Width / 2, Height / 2), &endPoints, true);
 	Canvas->K2_DrawTriangle(nullptr, triangles);
 }
 
