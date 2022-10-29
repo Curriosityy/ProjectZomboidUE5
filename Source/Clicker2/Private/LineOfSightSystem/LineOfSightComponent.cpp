@@ -11,6 +11,7 @@
 #include "Kismet\KismetRenderingLibrary.h"
 #include "Materials\MaterialParameterCollection.h"
 #include "Materials\MaterialParameterCollectionInstance.h"
+#include "Player\Clicker2Character.h"
 
 // Sets default values for this component's properties
 ULineOfSightComponent::ULineOfSightComponent()
@@ -32,11 +33,12 @@ FCanvasUVTri ULineOfSightComponent::GenerateTriangle()
 	return FCanvasUVTri();
 }
 
+//TODO Optimize if needed. Divide and conquer (cast bigger shape and chceck if need rays)
 void ULineOfSightComponent::GenerateEndPointsList(TArray<FVector>* Array, float RotationStepAngle,
                                                   FVector RotateFromVector, int Ticks, float RayDistance)
 {
 	FVector impactPoint, endRotation, endPosition, position;
-	position = GetOwner()->GetActorTransform().GetLocation();
+	position = GetOwner<AClicker2Character>()->GetMesh()->GetSocketLocation(TEXT("HeadSeeSocket"));
 	FHitResult result;
 	FCollisionQueryParams Params = FCollisionQueryParams::DefaultQueryParam;
 	Params.AddIgnoredActor(GetOwner());
