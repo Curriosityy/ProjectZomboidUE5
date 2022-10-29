@@ -14,8 +14,11 @@ class AClicker2GameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
-	UPROPERTY()
+	UPROPERTY(Transient, NonTransactional)
 	TObjectPtr<UMaterialInstanceDynamic> AimOverlayMaterial;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UMaterialParameterCollection> FoSCollection;
 
 public:
 	AClicker2GameMode();

@@ -8,6 +8,8 @@
 #include "ItemSystem\ItemActor.h"
 #include "Materials\MaterialInstance.h"
 #include "Materials\MaterialInstanceDynamic.h"
+#include "Materials\MaterialParameterCollection.h"
+#include "Materials\MaterialParameterCollectionInstance.h"
 #include "Player\Clicker2PlayerController.h"
 #include "UI\GameHUD.h"
 #include "UObject\ConstructorHelpers.h"
@@ -71,6 +73,11 @@ void AClicker2GameMode::BeginPlay()
 			AimOverlayMaterial = UMaterialInstanceDynamic::Create(instance, this);
 			postProcessVolume->Settings.AddBlendable(AimOverlayMaterial.Get(), 1);
 		}
+	}
+
+	if (FoSCollection)
+	{
+		GetWorld()->GetParameterCollectionInstance(FoSCollection)->SetScalarParameterValue("DebugVisibility", 0.f);
 	}
 }
 
