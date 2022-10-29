@@ -8,14 +8,14 @@
 #include "ItemSystem\InventoryComponent.h"
 #include "Player\Clicker2Character.h"
 
-void UWearItemAsMain::Use(AClicker2Character* User, IItemHolder* CurrentItemHolder, UItem* Item)
+void UWearItemAsMain::Use(AClicker2Character* User, UItem* Item)
 {
 	UEquippedItem* mainHolder = GetMainHolder(User);
 
-	if (mainHolder->GetItem() != nullptr && mainHolder != CurrentItemHolder)
+	if (mainHolder->GetItem() != nullptr && mainHolder != Item->GetHolder())
 	{
-		User->GetInventoryComponent()->GetHeldItems()->AddItem(mainHolder, mainHolder->GetItem());
+		User->GetInventoryComponent()->GetHeldItems()->AddItem(mainHolder->GetItem());
 	}
 
-	mainHolder->AddItem(CurrentItemHolder, Item);
+	mainHolder->AddItem(Item);
 }

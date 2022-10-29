@@ -5,16 +5,16 @@
 
 #include "ItemSystem\ItemHolder.h"
 
-void UItemUsability::UseItem(AClicker2Character* user, IItemHolder* ItemHolder, UItem* Item)
+void UItemUsability::UseItem(AClicker2Character* user, UItem* Item)
 {
 	if (useBPFirst)
 	{
-		//BPUse(user, ItemHolder, Item);
-		Use(user, ItemHolder, Item);
+		BPUse(user, Item);
+		Use(user, Item);
 	}
 	else
 	{
-		Use(user, ItemHolder, Item);
-		//BPUse(user, ItemHolder, Item);
+		Use(user, Item);
+		BPUse(user, Item);
 	}
 }

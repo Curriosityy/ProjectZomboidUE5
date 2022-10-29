@@ -115,10 +115,10 @@ void AGameHUD::MoveItemBetweenInventoryAndScavengeItemHolders(IItemHolder* Curre
 		}
 
 		player->GetSearchItemComponent()->GetOverlappedItemsContainers()[index]->
-			AddItem(CurrentItemHolder, ItemToMove);
+			AddItem(ItemToMove);
 	}
 	else
 	{
-		player->GetInventoryComponent()->GetHeldItems()->AddItem(CurrentItemHolder, ItemToMove);
+		player->GetInventoryComponent()->GetHeldItems()->AddItem(ItemToMove);
 	}
 }

@@ -38,7 +38,7 @@ public:
 	                bool isMainHand);
 
 
-	virtual bool AddItem(IItemHolder* previousOwner, UItem* item) override;
+	virtual bool AddItem(UItem* item) override;
 
 	virtual bool RemoveItem(UItem* item) override;
 };

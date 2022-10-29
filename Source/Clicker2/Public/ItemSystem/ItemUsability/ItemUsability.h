@@ -22,12 +22,12 @@ private:
 
 protected:
 	//Method to implement when, want to write c++ usability of item
-	virtual void Use(AClicker2Character* user, IItemHolder* ItemHolder, UItem* Item) PURE_VIRTUAL(UItemUsability,);
+	virtual void Use(AClicker2Character* user, UItem* Item) PURE_VIRTUAL(UItemUsability,);
 
 	//Method to implement 
-	//UFUNCTION(BlueprintImplementableEvent)
-	//void BPUse(AClicker2Character* user, IItemHolder* ItemHolder, UItem* Item);
+	UFUNCTION(BlueprintImplementableEvent)
+	void BPUse(AClicker2Character* user, UItem* Item);
 
 public:
-	virtual void UseItem(AClicker2Character* user, IItemHolder* ItemHolder, UItem* Item);
+	virtual void UseItem(AClicker2Character* user, UItem* Item);
 };

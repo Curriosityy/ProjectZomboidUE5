@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UI/DropItemOnGroundUserWidget.h"
-#include "Player/Clicker2Character.h"
+#include "UI\DropItemOnGroundUserWidget.h"
 #include "macros.h"
-#include "Blueprint/DragDropOperation.h"
-#include "ItemSystem/SearchForPickupColliderComponent.h"
-#include "UI/ItemWidget.h"
+#include "Blueprint\DragDropOperation.h"
+#include "ItemSystem\SearchForPickupColliderComponent.h"
+#include "Player\Clicker2Character.h"
+#include "UI\ItemWidget.h"
 
 
 bool UDropItemOnGroundUserWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
@@ -14,23 +14,23 @@ bool UDropItemOnGroundUserWidget::NativeOnDrop(const FGeometry& InGeometry, cons
 {
 	bool handled = Super::NativeOnDrop(InGeometry, InDragDropEvent, InOperation);
 
-	if(!handled)
+	if (!handled)
 	{
 		if (UItemWidget* Payload = static_cast<UItemWidget*>(InOperation->Payload))
 		{
-			if(Payload->GetItemHolder() && Payload->GetHeldItem())
+			if (Payload->GetItemHolder() && Payload->GetHeldItem())
 			{
-				if(Payload->GetItemHolder() != SearchItemComp)
+				if (Payload->GetItemHolder() != SearchItemComp)
 				{
-					SearchItemComp->AddItem(Payload->GetItemHolder(),Payload->GetHeldItem());
+					SearchItemComp->AddItem(Payload->GetHeldItem());
 				}
 			}
-			
+
 			Payload->DragFinished();
-			handled=true;
+			handled = true;
 		}
 	}
-	
+
 	return handled;
 }
 

@@ -1,23 +1,22 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ItemSystem/BasicItemContainer.h"
+#include "ItemSystem\BasicItemContainer.h"
 
-#include "ItemSystem/InventoryComponent.h"
-#include "ItemSystem/EquippedItem.h"
-#include "ItemSystem/Item.h"
-#include "ItemSystem/ItemDatas/BackpackItemData.h"
-#include "Player/Clicker2Character.h"
-#include "Player/PlayerStatsComponent.h"
+#include "ItemSystem\EquippedItem.h"
+#include "ItemSystem\InventoryComponent.h"
+#include "ItemSystem\Item.h"
+#include "ItemSystem\ItemDatas\BackpackItemData.h"
+#include "Player\Clicker2Character.h"
+#include "Player\PlayerStatsComponent.h"
 
 UBasicItemContainer::UBasicItemContainer()
 {
-	
 }
 
 void UBasicItemContainer::Initialize(AClicker2Character* owner)
 {
-	Owner=owner;
+	Owner = owner;
 }
 
 int UBasicItemContainer::GetSize()
@@ -40,31 +39,29 @@ bool UBasicItemContainer::CanAddItem(UItem* item)
 	return CanHeldItemType(item->GetItemData()->GetItemType());
 }
 
-bool UBasicItemContainer::AddItem(IItemHolder* previousOwner, UItem* item)
+bool UBasicItemContainer::AddItem(UItem* item)
 {
 	bool added = false;
 
-	if(CanAddItem(item))
+	if (CanAddItem(item))
 	{
-		if(previousOwner->RemoveItem(item))
-		{
-			ItemsHeld.Add(item);
-			added = true;
-			OnInventoryUpdated.Broadcast(this);
-		}
+		item->SetNewOwner(this);
+		ItemsHeld.Add(item);
+		added = true;
+		OnInventoryUpdated.Broadcast(this);
 	}
-	
+
 	return added;
 }
 
 bool UBasicItemContainer::RemoveItem(UItem* item)
 {
-	if(ItemsHeld.Remove(item)>0)
+	if (ItemsHeld.Remove(item) > 0)
 	{
 		OnInventoryUpdated.Broadcast(this);
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -76,8 +73,8 @@ float UBasicItemContainer::GetWeightOfHeldItems()
 	{
 		weight += item->GetItemData()->GetWeight();
 	}
-	
-	return weight*Owner->GetStatsComponent()->BackpackWeightMultiplier;
+
+	return weight * Owner->GetStatsComponent()->BackpackWeightMultiplier;
 }
 
 FOnInventoryUpdated* UBasicItemContainer::GetOnInventoryUpdated()

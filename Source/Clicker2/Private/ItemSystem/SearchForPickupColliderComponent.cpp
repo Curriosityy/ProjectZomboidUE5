@@ -34,16 +34,11 @@ bool USearchForPickupColliderComponent::CanAddItem(UItem* item)
 	return true;
 }
 
-bool USearchForPickupColliderComponent::AddItem(IItemHolder* previousOwner, UItem* item)
+bool USearchForPickupColliderComponent::AddItem(UItem* item)
 {
-	if (previousOwner->RemoveItem(item))
-	{
-		auto spawnedItem = GetWorld()->GetAuthGameMode<AClicker2GameMode>()->SpawnItem(item, GetOwner());
-
-		return true;
-	}
-
-	return false;
+	item->SetNewOwner(this);
+	auto spawnedItem = GetWorld()->GetAuthGameMode<AClicker2GameMode>()->SpawnItem(item, GetOwner());
+	return true;
 }
 
 bool USearchForPickupColliderComponent::RemoveItem(UItem* item)

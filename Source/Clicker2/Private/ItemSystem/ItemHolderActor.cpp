@@ -1,7 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ItemSystem/ItemHolderActor.h"
+#include "ItemSystem\ItemHolderActor.h"
+
+#include "ItemSystem\Item.h"
 
 int AItemHolderActor::GetSize()
 {
@@ -23,21 +25,17 @@ bool AItemHolderActor::CanAddItem(UItem* item)
 	return true;
 }
 
-bool AItemHolderActor::AddItem(IItemHolder* previousOwner, UItem* item)
+bool AItemHolderActor::AddItem(UItem* item)
 {
-	if(previousOwner->RemoveItem(item))
-	{
-		HeldItems.Add(item);
-		OnInventoryUpdated.Broadcast(this);
-		return true;
-	}
-	
-	return false;
+	item->SetNewOwner(this);
+	HeldItems.Add(item);
+	OnInventoryUpdated.Broadcast(this);
+	return true;
 }
 
 bool AItemHolderActor::RemoveItem(UItem* item)
 {
-	if(HeldItems.Remove(item)>0)
+	if (HeldItems.Remove(item) > 0)
 	{
 		OnInventoryUpdated.Broadcast(this);
 

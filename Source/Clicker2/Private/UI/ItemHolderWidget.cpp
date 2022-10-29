@@ -125,7 +125,7 @@ bool UItemHolderWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDro
 				}
 				else
 				{
-					CurrentItemHolder->AddItem(sender->GetItemHolder(), sender->GetHeldItem());
+					CurrentItemHolder->AddItem(sender->GetHeldItem());
 				}
 			}
 

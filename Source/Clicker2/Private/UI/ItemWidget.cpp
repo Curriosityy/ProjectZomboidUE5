@@ -181,7 +181,7 @@ bool UItemWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent
 				}
 				else
 				{
-					ItemHolder->AddItem(payload->ItemHolder.GetInterface(), payload->HeldItem);
+					ItemHolder->AddItem(payload->HeldItem);
 				}
 			}
 		}

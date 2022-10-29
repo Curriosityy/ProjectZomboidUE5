@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ItemSystem/EquippedItem.h"
+#include "ItemSystem\EquippedItem.h"
 
-#include "ItemSystem/Item.h"
-#include "ItemSystem/ItemDatas/ItemData.h"
+#include "ItemSystem\Item.h"
+#include "ItemSystem\ItemDatas\ItemData.h"
 
 void UEquippedItem::Initialize(EItemType itemType)
 {
@@ -38,43 +38,36 @@ bool UEquippedItem::CanAddItem(UItem* item)
 	return CanHeldItemType(item->GetItemData()->GetItemType()) && Item == nullptr;
 }
 
-bool UEquippedItem::AddItem(IItemHolder* previousOwner, UItem* item)
+bool UEquippedItem::AddItem(UItem* item)
 {
-
-	
-	if(CanAddItem(item))
+	if (CanAddItem(item))
 	{
-		if(previousOwner!=nullptr)
-		{
-			previousOwner->RemoveItem(item);
-		}
-		
+		item->SetNewOwner(this);
 		Item = item;
 		OnEquippedItemUpdated.Broadcast(this);
 
 		return true;
 	}
-	
+
 	return false;
 }
 
 bool UEquippedItem::RemoveItem(UItem* item)
 {
-	if(Item == item)
+	if (Item == item)
 	{
 		Item = nullptr;
 		OnEquippedItemUpdated.Broadcast(this);
-		
+
 		return true;
 	}
-	
+
 	return false;
 }
 
 float UEquippedItem::GetWeightOfHeldItems()
 {
-
-	return Item == nullptr?0:Item->GetItemData()->GetWeight();
+	return Item == nullptr ? 0 : Item->GetItemData()->GetWeight();
 }
 
 FOnInventoryUpdated* UEquippedItem::GetOnInventoryUpdated()

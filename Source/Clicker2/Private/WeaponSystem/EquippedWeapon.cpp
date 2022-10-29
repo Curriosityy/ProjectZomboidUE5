@@ -20,7 +20,7 @@ void UEquippedWeapon::Initialize(EItemType itemType, FName Socket, USkeletalMesh
 }
 
 
-bool UEquippedWeapon::AddItem(IItemHolder* previousOwner, UItem* item)
+bool UEquippedWeapon::AddItem(UItem* item)
 {
 	if (CanAddItem(item))
 	{
@@ -33,18 +33,24 @@ bool UEquippedWeapon::AddItem(IItemHolder* previousOwner, UItem* item)
 			{
 				if (IsMainHand)
 				{
-					bCanHeld = SecondHand->Super::AddItem(nullptr, item);
+					bCanHeld = SecondHand->CanAddItem(item);
+
+					if (bCanHeld)
+					{
+						SecondHand->Item = item;
+						SecondHand->OnEquippedItemUpdated.Broadcast(SecondHand->_getUObject());
+					}
 				}
 				else
 				{
-					return SecondHand->AddItem(previousOwner, item);
+					return SecondHand->AddItem(item);
 				}
 			}
 		}
 
 		if (bCanHeld)
 		{
-			Super::AddItem(previousOwner, item);
+			Super::AddItem(item);
 
 			if (weapon && weapon->GetWeaponAttackComponent())
 			{

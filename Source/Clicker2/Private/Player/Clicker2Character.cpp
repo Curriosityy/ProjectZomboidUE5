@@ -110,6 +110,6 @@ void AClicker2Character::BeginPlay()
 	if (TestItem)
 	{
 		auto testItemData = GetWorld()->GetAuthGameMode<AClicker2GameMode>()->SpawnItem(TestItem.GetDefaultObject());
-		InventoryComp->GetRightHand()->AddItem(nullptr, testItemData);
+		InventoryComp->GetRightHand()->AddItem(testItemData);
 	}
 }
