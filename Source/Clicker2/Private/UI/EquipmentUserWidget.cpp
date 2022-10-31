@@ -33,30 +33,30 @@ void UEquipmentUserWidget::OnItemDrop(UItemWidget* Reciver, UItem* Payload)
 {
 	IItemHolder* reciverHolder = GetItemHolderBasedOnItemWidget(Reciver);
 
-	if (UWeaponItemData* weapon = Cast<UWeaponItemData>(Payload))
+	if (UWeaponItemData* weapon = Cast<UWeaponItemData>(Payload->GetItemData()))
 	{
-		if (reciverHolder == CurrentInventoryComponent->GetLeftHand())
+		if (reciverHolder == CurrentInventoryComponent->GetLeftHand() ||
+			reciverHolder == CurrentInventoryComponent->GetRightHand())
 		{
-			ItemHelper::AddItemToNewHolder(CurrentInventoryComponent->GetRightHand(), Payload);
+			reciverHolder = CurrentInventoryComponent->GetRightHand();
 		}
 	}
-	else
-	{
-		ItemHelper::AddItemToNewHolder(reciverHolder, Payload);
-	}
+
+
+	ItemHelper::AddItemToNewHolder(reciverHolder, Payload);
 }
 
 void UEquipmentUserWidget::Unsubscribe(UEquippedItem* itemHolder, UItemWidget* widget)
 {
 	itemHolder->GetOnInventoryUpdated()
-	          ->RemoveDynamic(widget, &UItemWidget::SetItem);
+	          ->RemoveDynamic(widget, &UItemWidget::SetupByItemholder);
 	widget->OnItemDrop.RemoveDynamic(this, &UEquipmentUserWidget::OnItemDrop);
 }
 
 void UEquipmentUserWidget::Subscribe(UEquippedItem* itemHolder, UItemWidget* itemWidhet)
 {
 	itemHolder->GetOnInventoryUpdated()
-	          ->AddDynamic(itemWidhet, &UItemWidget::SetItem);
+	          ->AddDynamic(itemWidhet, &UItemWidget::SetupByItemholder);
 
 	itemWidhet->OnItemDrop.AddDynamic(this, &UEquipmentUserWidget::OnItemDrop);
 }
@@ -99,13 +99,13 @@ void UEquipmentUserWidget::Setup(UInventoryComponent* InventoryComponent)
 	CurrentInventoryComponent = InventoryComponent;
 	Subscribe(CurrentInventoryComponent);
 
-	Head->SetItem(InventoryComponent->GetHelmetPlace());
-	Backpack->SetItem(InventoryComponent->GetBackpack());
-	RightHand->SetItem(InventoryComponent->GetRightHand());
-	LeftHand->SetItem(InventoryComponent->GetLeftHand());
-	Chest->SetItem(InventoryComponent->GetArmorPlace());
-	Legs->SetItem(InventoryComponent->GetLegs());
-	Boots->SetItem(InventoryComponent->GetBoots());
+	Head->SetupByItemholder(InventoryComponent->GetHelmetPlace());
+	Backpack->SetupByItemholder(InventoryComponent->GetBackpack());
+	RightHand->SetupByItemholder(InventoryComponent->GetRightHand());
+	LeftHand->SetupByItemholder(InventoryComponent->GetLeftHand());
+	Chest->SetupByItemholder(InventoryComponent->GetArmorPlace());
+	Legs->SetupByItemholder(InventoryComponent->GetLegs());
+	Boots->SetupByItemholder(InventoryComponent->GetBoots());
 
 	DoubleHandWearTest(InventoryComponent->GetRightHand());
 }

@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework\HUD.h"
+#include "Player\Clicker2PlayerController.h"
 #include "GameHUD.generated.h"
 
+class UQuickEquipUserWidget;
 class UDropItemOnGroundUserWidget;
 class UScavengingUserWidget;
 class AClicker2Character;
@@ -32,11 +34,17 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> DropItemOnGroundWidget;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> QuickEquipWidget;
+
 	UPROPERTY(Transient, NonTransactional)
 	TObjectPtr<UInventoryUserWidget> Inventory;
 
 	UPROPERTY(Transient, NonTransactional)
 	TObjectPtr<UScavengingUserWidget> Scavenge;
+
+	UPROPERTY(Transient, NonTransactional)
+	TObjectPtr<UQuickEquipUserWidget> QuickEquip;
 
 	UPROPERTY(Transient, NonTransactional)
 	TObjectPtr<UDropItemOnGroundUserWidget> DropItemOnGround;
@@ -61,4 +69,6 @@ public:
 	bool IsMouseOverBlockUI();
 
 	void MoveItemBetweenInventoryAndScavengeItemHolders(UItem* ItemToMove);
+
+	void UseQuick(int quick, AClicker2Character* character);
 };

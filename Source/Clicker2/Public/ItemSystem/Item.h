@@ -29,7 +29,7 @@ class CLICKER2_API UItem : public UObject
 	TScriptInterface<IItemHolder> Holder;
 
 public:
-	FOnItemHolderChanged ItemHolderChanged;
+	FOnItemHolderChanged OnItemHolderChanged;
 
 	void SetNewOwner(IItemHolder* NewOwner);
 

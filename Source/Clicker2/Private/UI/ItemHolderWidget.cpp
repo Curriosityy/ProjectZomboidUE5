@@ -31,10 +31,7 @@ void UItemHolderWidget::NativePreConstruct()
 
 FReply UItemHolderWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
-	auto test = Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
-	PRINT_DEBUG("%d", test.IsEventHandled());
-
-	return test;
+	return Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
 }
 
 void UItemHolderWidget::OnInventoryUpdated(TScriptInterface<IItemHolder> ChangedItemHolder)
@@ -61,7 +58,7 @@ void UItemHolderWidget::RefreshInventoryUI()
 	{
 		if (ItemsToShow.Num() > i)
 		{
-			ItemWidgets[i]->SetItem(CurrentItemHolder.GetInterface());
+			ItemWidgets[i]->SetupByItemholder(CurrentItemHolder.GetInterface());
 			ItemWidgets[i]->SetVisibility(ESlateVisibility::Visible);
 		}
 		else

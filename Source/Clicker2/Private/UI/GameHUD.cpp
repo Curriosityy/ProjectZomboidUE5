@@ -13,6 +13,7 @@
 #include "UI\DropItemOnGroundUserWidget.h"
 #include "UI\InventoryUserWidget.h"
 #include "UI\ItemWidget.h"
+#include "UI\QuickEquipUserWidget.h"
 #include "UI\ScavengingUserWidget.h"
 
 AGameHUD::AGameHUD()
@@ -33,6 +34,12 @@ void AGameHUD::BeginPlay()
 {
 	Super::BeginPlay();
 	UItemWidget::sIsDragged = false;
+
+	if (QuickEquipWidget)
+	{
+		QuickEquip = CreateWidget<UQuickEquipUserWidget>(GetWorld(), QuickEquipWidget);
+		QuickEquip->AddToViewport();
+	}
 }
 
 void AGameHUD::Tick(float DeltaSeconds)
@@ -123,4 +130,9 @@ void AGameHUD::MoveItemBetweenInventoryAndScavengeItemHolders(UItem* ItemToMove)
 		ItemHelper::AddItemToNewHolder(player->GetInventoryComponent()->GetHeldItems(),
 		                               ItemToMove);
 	}
+}
+
+void AGameHUD::UseQuick(int quick, AClicker2Character* character)
+{
+	QuickEquip->QuickUse(quick, character);
 }

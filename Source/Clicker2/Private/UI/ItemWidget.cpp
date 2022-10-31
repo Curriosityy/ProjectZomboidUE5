@@ -19,7 +19,7 @@ TObjectPtr<UItem> UItemWidget::GetHeldItem() const
 	return HeldItem;
 }
 
-void UItemWidget::SetItem(IItemHolder* itemHolder)
+void UItemWidget::SetupByItemholder(IItemHolder* itemHolder)
 {
 	UItem* item = nullptr;
 
@@ -45,9 +45,23 @@ void UItemWidget::SetItem(IItemHolder* itemHolder)
 	}
 }
 
-void UItemWidget::SetItem(TScriptInterface<IItemHolder> itemHolderScriptInterface)
+void UItemWidget::SetItem(UItem* item)
 {
-	SetItem(itemHolderScriptInterface.GetInterface());
+	if (item == nullptr)
+	{
+		HeldItem = nullptr;
+		SetIcon(nullptr);
+	}
+	else
+	{
+		HeldItem = item;
+		SetIcon(item->GetItemData()->GetItemThumbnail());
+	}
+}
+
+void UItemWidget::SetupByItemholder(TScriptInterface<IItemHolder> itemHolderScriptInterface)
+{
+	SetupByItemholder(itemHolderScriptInterface.GetInterface());
 }
 
 void UItemWidget::NativeOnInitialized()
@@ -75,9 +89,9 @@ void UItemWidget::SetIcon(UTexture2D* texture)
 	ItemIcon->SetBrushFromTexture(texture, false);
 }
 
-void UItemWidget::SetCount(int count)
+void UItemWidget::SetCount(int count, bool ForceToShow = false)
 {
-	if (count <= 1)
+	if (count <= 1 && !ForceToShow)
 	{
 		CountText->SetText(FText::FromString(""));
 	}

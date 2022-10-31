@@ -52,12 +52,14 @@ protected:
 public:
 	inline static bool sIsDragged = false;
 
-	void SetItem(IItemHolder* itemHolder);
+	void SetupByItemholder(IItemHolder* itemHolder);
+
+	void SetItem(UItem* item);
 
 	UFUNCTION()
-	void SetItem(TScriptInterface<IItemHolder> itemHolderScriptInterface);
+	void SetupByItemholder(TScriptInterface<IItemHolder> itemHolderScriptInterface);
 
-	void SetCount(int count);
+	void SetCount(int count, bool ForceToShow);
 
 	void Init(int index);
 
@@ -67,12 +69,10 @@ public:
 
 	virtual void NativePreConstruct() override;
 
-protected:
 	void SetIcon(UTexture2D* texture);
 
 	void SetValues(UTexture2D* texture, int count = 1);
 
-public:
 	virtual void NativeConstruct() override;
 
 	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;

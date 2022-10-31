@@ -31,7 +31,7 @@ UItemData* UItem::GetItemData()
 void UItem::SetNewOwner(IItemHolder* NewOwner)
 {
 	Holder = NewOwner ? NewOwner->_getUObject() : nullptr;
-	ItemHolderChanged.Broadcast(this);
+	OnItemHolderChanged.Broadcast(this);
 }
 
 template <class T>
