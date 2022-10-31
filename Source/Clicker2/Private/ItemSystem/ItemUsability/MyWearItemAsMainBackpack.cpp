@@ -5,7 +5,7 @@
 #include "ItemSystem\InventoryComponent.h"
 #include "Player\Clicker2Character.h"
 
-UEquippedItem* UMyWearItemAsMainBackpack::GetMainHolder(AClicker2Character* User)
+UEquippedItem* UMyWearItemAsMainBackpack::GetItemDestination(AClicker2Character* User)
 {
 	return User->GetInventoryComponent()->GetBackpack();
 }

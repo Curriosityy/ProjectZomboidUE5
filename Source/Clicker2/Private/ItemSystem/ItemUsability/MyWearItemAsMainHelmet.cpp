@@ -5,7 +5,7 @@
 #include "ItemSystem\InventoryComponent.h"
 #include "Player\Clicker2Character.h"
 
-UEquippedItem* UMyWearItemAsMainHelmet::GetMainHolder(AClicker2Character* User)
+UEquippedItem* UMyWearItemAsMainHelmet::GetItemDestination(AClicker2Character* User)
 {
 	return User->GetInventoryComponent()->GetHelmetPlace();
 }

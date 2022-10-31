@@ -102,6 +102,7 @@ void USearchForPickupColliderComponent::OnStartOverlap(UPrimitiveComponent* Over
 		if (pickupable->CanPickUp())
 		{
 			OverlappedItemsOnGround.Add(pickupable->_getUObject());
+			pickupable->GetItemInfo()->SetNewOwner(this);
 			OnItemOnGroundUpdated.Broadcast(this);
 		}
 		else
@@ -123,6 +124,7 @@ void USearchForPickupColliderComponent::OnEndOverlap(UPrimitiveComponent* Overla
 	if (IPickupable* pickupable = dynamic_cast<IPickupable*>(OtherActor))
 	{
 		OverlappedItemsOnGround.Remove(pickupable->_getUObject());
+		pickupable->GetItemInfo()->SetNewOwner(nullptr);
 		OnItemOnGroundUpdated.Broadcast(this);
 	}
 }

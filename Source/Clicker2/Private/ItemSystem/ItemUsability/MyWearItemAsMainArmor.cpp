@@ -6,7 +6,7 @@
 #include "ItemSystem\InventoryComponent.h"
 #include "Player\Clicker2Character.h"
 
-UEquippedItem* UMyWearItemAsMainArmor::GetMainHolder(AClicker2Character* User)
+UEquippedItem* UMyWearItemAsMainArmor::GetItemDestination(AClicker2Character* User)
 {
 	return User->GetInventoryComponent()->GetArmorPlace();
 }

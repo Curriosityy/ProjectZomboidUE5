@@ -6,5 +6,5 @@ class UItem;
 class ItemHelper
 {
 public:
-	bool static AddItemToNewHolder(IItemHolder* OldHolder, IItemHolder* NewHolder, UItem* Item);
+	bool static AddItemToNewHolder(IItemHolder* NewHolder, UItem* Item);
 };

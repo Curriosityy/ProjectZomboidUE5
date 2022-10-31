@@ -5,7 +5,7 @@
 #include "ItemSystem\InventoryComponent.h"
 #include "Player\Clicker2Character.h"
 
-UEquippedItem* UWearItemAsMainWeapon::GetMainHolder(AClicker2Character* User)
+UEquippedItem* UWearItemAsMainWeapon::GetItemDestination(AClicker2Character* User)
 {
 	return User->GetInventoryComponent()->GetRightHand();
 }

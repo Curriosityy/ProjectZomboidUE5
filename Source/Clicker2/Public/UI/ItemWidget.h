@@ -17,6 +17,9 @@ class UDragDropOperation;
  *
  * 
  */
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnItemDrop, UItemWidget*, reciver, UItem*, payload);
+
 UCLASS()
 class CLICKER2_API UItemWidget : public UUserWidget
 {
@@ -38,13 +41,10 @@ protected:
 	UPROPERTY(Transient, NonTransactional)
 	TObjectPtr<UItem> HeldItem = nullptr;
 
-	UPROPERTY(Transient, NonTransactional)
-	TScriptInterface<IItemHolder> ItemHolder = nullptr;
-
 public:
 	TObjectPtr<UItem> GetHeldItem() const;
 
-	IItemHolder* GetItemHolder();
+	FOnItemDrop OnItemDrop;
 
 protected:
 	int Index;
@@ -87,5 +87,5 @@ public:
 
 	virtual void SetVisibility(ESlateVisibility InVisibility) override;
 
-	void DragFinished();
+	static void DragFinished();
 };

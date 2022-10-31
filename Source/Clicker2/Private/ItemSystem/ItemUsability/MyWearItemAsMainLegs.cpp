@@ -6,7 +6,7 @@
 #include "ItemSystem\InventoryComponent.h"
 #include "Player\Clicker2Character.h"
 
-UEquippedItem* UMyWearItemAsMainLegs::GetMainHolder(AClicker2Character* User)
+UEquippedItem* UMyWearItemAsMainLegs::GetItemDestination(AClicker2Character* User)
 {
 	return User->GetInventoryComponent()->GetLegs();
 }

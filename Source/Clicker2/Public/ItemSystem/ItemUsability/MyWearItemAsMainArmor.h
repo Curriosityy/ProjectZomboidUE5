@@ -15,5 +15,5 @@ class CLICKER2_API UMyWearItemAsMainArmor : public UWearItemAsMain
 	GENERATED_BODY()
 
 public:
-	virtual UEquippedItem* GetMainHolder(AClicker2Character* User) override;
+	virtual UEquippedItem* GetItemDestination(AClicker2Character* User) override;
 };

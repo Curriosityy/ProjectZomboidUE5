@@ -71,6 +71,10 @@ public:
 
 	UItemHolderWidget(const FObjectInitializer& ObjectInitializer);
 
+	UFUNCTION()
+
+	void OnItemDroped(UItemWidget* Reciver, UItem* Payload);
+
 	virtual void NativeConstruct() override;
 
 	virtual void NativePreConstruct() override;

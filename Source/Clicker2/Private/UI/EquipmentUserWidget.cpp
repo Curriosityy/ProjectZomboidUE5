@@ -6,6 +6,7 @@
 #include "ItemSystem\EquippedItem.h"
 #include "ItemSystem\InventoryComponent.h"
 #include "ItemSystem\Item.h"
+#include "ItemSystem\ItemHelper.h"
 #include "UI\ItemWidget.h"
 #include "WeaponSystem\WeaponItemData.h"
 
@@ -28,61 +29,65 @@ void UEquipmentUserWidget::DoubleHandWearTest(TScriptInterface<IItemHolder> Item
 	LeftHand->SetVisibility(visibility);
 }
 
-void UEquipmentUserWidget::Unsubscribe(UInventoryComponent* InventoryComponent)
+void UEquipmentUserWidget::OnItemDrop(UItemWidget* Reciver, UItem* Payload)
 {
-	InventoryComponent->GetHelmetPlace()->GetOnInventoryUpdated()
-	                  ->RemoveDynamic(Head.Get(), &UItemWidget::SetItem);
+	IItemHolder* reciverHolder = GetItemHolderBasedOnItemWidget(Reciver);
 
-	InventoryComponent->GetBackpack()->GetOnInventoryUpdated()
-	                  ->RemoveDynamic(Backpack.Get(), &UItemWidget::SetItem);
+	if (UWeaponItemData* weapon = Cast<UWeaponItemData>(Payload))
+	{
+		if (reciverHolder == CurrentInventoryComponent->GetLeftHand())
+		{
+			ItemHelper::AddItemToNewHolder(CurrentInventoryComponent->GetRightHand(), Payload);
+		}
+	}
+	else
+	{
+		ItemHelper::AddItemToNewHolder(reciverHolder, Payload);
+	}
+}
 
-	InventoryComponent->GetRightHand()->GetOnInventoryUpdated()
-	                  ->RemoveDynamic(RightHand.Get(), &UItemWidget::SetItem);
+void UEquipmentUserWidget::Unsubscribe(UEquippedItem* itemHolder, UItemWidget* widget)
+{
+	itemHolder->GetOnInventoryUpdated()
+	          ->RemoveDynamic(widget, &UItemWidget::SetItem);
+	widget->OnItemDrop.RemoveDynamic(this, &UEquipmentUserWidget::OnItemDrop);
+}
 
-	InventoryComponent->GetLeftHand()->GetOnInventoryUpdated()
-	                  ->RemoveDynamic(LeftHand.Get(), &UItemWidget::SetItem);
+void UEquipmentUserWidget::Subscribe(UEquippedItem* itemHolder, UItemWidget* itemWidhet)
+{
+	itemHolder->GetOnInventoryUpdated()
+	          ->AddDynamic(itemWidhet, &UItemWidget::SetItem);
 
-	InventoryComponent->GetArmorPlace()->GetOnInventoryUpdated()
-	                  ->RemoveDynamic(Chest.Get(), &UItemWidget::SetItem);
-
-	InventoryComponent->GetLegs()->GetOnInventoryUpdated()
-	                  ->RemoveDynamic(Legs.Get(), &UItemWidget::SetItem);
-
-	InventoryComponent->GetBoots()->GetOnInventoryUpdated()
-	                  ->RemoveDynamic(Boots.Get(), &UItemWidget::SetItem);
-
-	InventoryComponent->GetRightHand()->GetOnInventoryUpdated()
-	                  ->RemoveDynamic(this, &UEquipmentUserWidget::DoubleHandWearTest);
+	itemWidhet->OnItemDrop.AddDynamic(this, &UEquipmentUserWidget::OnItemDrop);
 }
 
 void UEquipmentUserWidget::Subscribe(UInventoryComponent* InventoryComponent)
 {
-	InventoryComponent->GetHelmetPlace()->GetOnInventoryUpdated()
-	                  ->AddDynamic(Head.Get(), &UItemWidget::SetItem);
-
-	InventoryComponent->GetBackpack()->GetOnInventoryUpdated()
-	                  ->AddDynamic(Backpack.Get(), &UItemWidget::SetItem);
-
-	InventoryComponent->GetRightHand()->GetOnInventoryUpdated()
-	                  ->AddDynamic(RightHand.Get(), &UItemWidget::SetItem);
-
-	InventoryComponent->GetLeftHand()->GetOnInventoryUpdated()
-	                  ->AddDynamic(LeftHand.Get(), &UItemWidget::SetItem);
+	Subscribe(InventoryComponent->GetHelmetPlace(), Head);
+	Subscribe(InventoryComponent->GetBackpack(), Backpack);
+	Subscribe(InventoryComponent->GetRightHand(), RightHand);
+	Subscribe(InventoryComponent->GetLeftHand(), LeftHand);
+	Subscribe(InventoryComponent->GetArmorPlace(), Chest);
+	Subscribe(InventoryComponent->GetLegs(), Legs);
+	Subscribe(InventoryComponent->GetBoots(), Boots);
 
 	InventoryComponent->GetRightHand()->GetOnInventoryUpdated()
 	                  ->AddDynamic(this, &UEquipmentUserWidget::DoubleHandWearTest);
-
-
-	InventoryComponent->GetArmorPlace()->GetOnInventoryUpdated()
-	                  ->AddDynamic(Chest.Get(), &UItemWidget::SetItem);
-
-	InventoryComponent->GetLegs()->GetOnInventoryUpdated()
-	                  ->AddDynamic(Legs.Get(), &UItemWidget::SetItem);
-
-	InventoryComponent->GetBoots()->GetOnInventoryUpdated()
-	                  ->AddDynamic(Boots.Get(), &UItemWidget::SetItem);
 }
 
+void UEquipmentUserWidget::Unsubscribe(UInventoryComponent* InventoryComponent)
+{
+	Unsubscribe(InventoryComponent->GetHelmetPlace(), Head);
+	Unsubscribe(InventoryComponent->GetBackpack(), Backpack);
+	Unsubscribe(InventoryComponent->GetRightHand(), RightHand);
+	Unsubscribe(InventoryComponent->GetLeftHand(), LeftHand);
+	Unsubscribe(InventoryComponent->GetArmorPlace(), Chest);
+	Unsubscribe(InventoryComponent->GetLegs(), Legs);
+	Unsubscribe(InventoryComponent->GetBoots(), Boots);
+
+	InventoryComponent->GetRightHand()->GetOnInventoryUpdated()
+	                  ->RemoveDynamic(this, &UEquipmentUserWidget::DoubleHandWearTest);
+}
 
 void UEquipmentUserWidget::Setup(UInventoryComponent* InventoryComponent)
 {
@@ -98,13 +103,13 @@ void UEquipmentUserWidget::Setup(UInventoryComponent* InventoryComponent)
 	Backpack->SetItem(InventoryComponent->GetBackpack());
 	RightHand->SetItem(InventoryComponent->GetRightHand());
 	LeftHand->SetItem(InventoryComponent->GetLeftHand());
-
-	DoubleHandWearTest(InventoryComponent->GetRightHand());
-
 	Chest->SetItem(InventoryComponent->GetArmorPlace());
 	Legs->SetItem(InventoryComponent->GetLegs());
 	Boots->SetItem(InventoryComponent->GetBoots());
+
+	DoubleHandWearTest(InventoryComponent->GetRightHand());
 }
+
 
 void UEquipmentUserWidget::NativeOnInitialized()
 {
@@ -117,4 +122,40 @@ void UEquipmentUserWidget::NativeOnInitialized()
 	Chest->Init(0);
 	Legs->Init(0);
 	Boots->Init(0);
+}
+
+IItemHolder* UEquipmentUserWidget::GetItemHolderBasedOnItemWidget(UItemWidget* Reciver)
+{
+	IItemHolder* itemHolder = nullptr;
+
+	if (Reciver == Head)
+	{
+		itemHolder = CurrentInventoryComponent->GetHelmetPlace();
+	}
+	else if (Reciver == Backpack)
+	{
+		itemHolder = CurrentInventoryComponent->GetBackpack();
+	}
+	else if (Reciver == RightHand)
+	{
+		itemHolder = CurrentInventoryComponent->GetRightHand();
+	}
+	else if (Reciver == Chest)
+	{
+		itemHolder = CurrentInventoryComponent->GetArmorPlace();
+	}
+	else if (Reciver == LeftHand)
+	{
+		itemHolder = CurrentInventoryComponent->GetLeftHand();
+	}
+	else if (Reciver == Legs)
+	{
+		itemHolder = CurrentInventoryComponent->GetLegs();
+	}
+	else if (Reciver == Boots)
+	{
+		itemHolder = CurrentInventoryComponent->GetBoots();
+	}
+
+	return itemHolder;
 }

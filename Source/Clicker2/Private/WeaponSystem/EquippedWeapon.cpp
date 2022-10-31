@@ -19,6 +19,29 @@ void UEquippedWeapon::Initialize(EItemType itemType, FName Socket, USkeletalMesh
 	IsMainHand = isMainHand;
 }
 
+void UEquippedWeapon::SpawnItemAtSocketPlace(UItem* item)
+{
+	SpawnedObject = GetWorld()->SpawnActor<AWeaponActor>();
+	FAttachmentTransformRules attachementRule = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true);
+	SpawnedObject->SkeletalMeshComponent->SetSkeletalMesh(
+		static_cast<USkeletalMesh*>(item->GetItemData()->GetItemInWorld()));
+	SpawnedObject->AttachToComponent(PlayerSkeletalMesh, attachementRule, SocketName);
+}
+
+void UEquippedWeapon::AddWeaponComponent(UWeaponItemData* weapon)
+{
+	if (weapon && weapon->GetWeaponAttackComponent())
+	{
+		if (AttackComponent)
+		{
+			AttackComponent->DestroyComponent();
+		}
+
+		AttackComponent = NewObject<UWeaponAttackComponent>(PlayerSkeletalMesh->GetAttachmentRootActor(),
+		                                                    weapon->GetWeaponAttackComponent());
+		AttackComponent->RegisterComponent();
+	}
+}
 
 bool UEquippedWeapon::AddItem(UItem* item)
 {
@@ -43,7 +66,7 @@ bool UEquippedWeapon::AddItem(UItem* item)
 				}
 				else
 				{
-					return SecondHand->AddItem(item);
+					return false;
 				}
 			}
 		}
@@ -52,23 +75,8 @@ bool UEquippedWeapon::AddItem(UItem* item)
 		{
 			Super::AddItem(item);
 
-			if (weapon && weapon->GetWeaponAttackComponent())
-			{
-				if (AttackComponent)
-				{
-					AttackComponent->DestroyComponent();
-				}
-
-				AttackComponent = NewObject<UWeaponAttackComponent>(PlayerSkeletalMesh->GetAttachmentRootActor(),
-				                                                    weapon->GetWeaponAttackComponent());
-				AttackComponent->RegisterComponent();
-			}
-
-			SpawnedObject = GetWorld()->SpawnActor<AWeaponActor>();
-			FAttachmentTransformRules attachementRule = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true);
-			SpawnedObject->SkeletalMeshComponent->SetSkeletalMesh(
-				static_cast<USkeletalMesh*>(item->GetItemData()->GetItemInWorld()));
-			SpawnedObject->AttachToComponent(PlayerSkeletalMesh, attachementRule, SocketName);
+			AddWeaponComponent(weapon);
+			SpawnItemAtSocketPlace(item);
 		}
 
 		return bCanHeld;

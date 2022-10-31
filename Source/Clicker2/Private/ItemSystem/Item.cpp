@@ -15,7 +15,7 @@ void UItem::Setup(UItemData* itemData)
 	ItemData = itemData;
 }
 
-void UItem::Use(AClicker2Character* User, IItemHolder* ItemHolder)
+void UItem::Use(AClicker2Character* User)
 {
 	for (TSubclassOf<UItemUsability> Element : ItemData->GetItemUsabilities())
 	{
@@ -30,7 +30,8 @@ UItemData* UItem::GetItemData()
 
 void UItem::SetNewOwner(IItemHolder* NewOwner)
 {
-	Holder = NewOwner->_getUObject();
+	Holder = NewOwner ? NewOwner->_getUObject() : nullptr;
+	ItemHolderChanged.Broadcast(this);
 }
 
 template <class T>

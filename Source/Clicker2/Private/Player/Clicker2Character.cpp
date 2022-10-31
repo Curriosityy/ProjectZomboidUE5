@@ -111,5 +111,6 @@ void AClicker2Character::BeginPlay()
 	{
 		auto testItemData = GetWorld()->GetAuthGameMode<AClicker2GameMode>()->SpawnItem(TestItem.GetDefaultObject());
 		InventoryComp->GetRightHand()->AddItem(testItemData);
+		testItemData->SetNewOwner(InventoryComp->GetRightHand());
 	}
 }

@@ -18,5 +18,5 @@ class CLICKER2_API UWearItemAsMain : public UItemUsability
 public:
 	virtual void Use(AClicker2Character* User, UItem* Item) override;
 
-	virtual UEquippedItem* GetMainHolder(AClicker2Character* User) PURE_VIRTUAL(GetMainHolder, return nullptr;);
+	virtual UEquippedItem* GetItemDestination(AClicker2Character* User) PURE_VIRTUAL(GetMainHolder, return nullptr;);
 };

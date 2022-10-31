@@ -101,10 +101,10 @@ bool AGameHUD::IsMouseOverBlockUI()
 	return mouseOver;
 }
 
-void AGameHUD::MoveItemBetweenInventoryAndScavengeItemHolders(IItemHolder* CurrentItemHolder, UItem* ItemToMove)
+void AGameHUD::MoveItemBetweenInventoryAndScavengeItemHolders(UItem* ItemToMove)
 {
 	auto player = Cast<AClicker2Character>(PlayerOwner->GetPawn());
-	bool isCurrentItemHolderInventory = player->GetInventoryComponent()->GetHeldItems() == CurrentItemHolder;
+	bool isCurrentItemHolderInventory = player->GetInventoryComponent()->GetHeldItems() == ItemToMove->GetHolder();
 
 	if (isCurrentItemHolderInventory)
 	{
@@ -115,14 +115,12 @@ void AGameHUD::MoveItemBetweenInventoryAndScavengeItemHolders(IItemHolder* Curre
 			index = Scavenge->GetCurrentScavengingWindow();
 		}
 
-		ItemHelper::AddItemToNewHolder(CurrentItemHolder,
-		                               player->GetSearchItemComponent()->GetOverlappedItemsContainers()[index],
+		ItemHelper::AddItemToNewHolder(player->GetSearchItemComponent()->GetOverlappedItemsContainers()[index],
 		                               ItemToMove);
 	}
 	else
 	{
-		ItemHelper::AddItemToNewHolder(CurrentItemHolder,
-		                               player->GetInventoryComponent()->GetHeldItems(),
+		ItemHelper::AddItemToNewHolder(player->GetInventoryComponent()->GetHeldItems(),
 		                               ItemToMove);
 	}
 }

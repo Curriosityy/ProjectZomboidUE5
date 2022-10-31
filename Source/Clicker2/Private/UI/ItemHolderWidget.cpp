@@ -8,6 +8,7 @@
 #include "Components\Button.h"
 #include "Components\UniformGridPanel.h"
 #include "ItemSystem\InventoryComponent.h"
+#include "ItemSystem\Item.h"
 #include "ItemSystem\ItemHelper.h"
 #include "ItemSystem\ItemHolder.h"
 #include "UI\ButtonBroadcastSelf.h"
@@ -117,27 +118,21 @@ bool UItemHolderWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDro
 
 	if (!handled)
 	{
-		if (auto sender = static_cast<UItemWidget*>(InOperation->Payload))
+		if (auto payload = Cast<UItem>(InOperation->Payload))
 		{
-			if (sender->GetItemHolder() && sender->GetHeldItem())
+			if (payload->GetHolder() == CurrentItemHolder.GetInterface())
 			{
-				if (sender->GetItemHolder() == CurrentItemHolder.GetInterface())
-				{
-				}
-				else
-				{
-					ItemHelper::AddItemToNewHolder(sender->GetItemHolder(),
-					                               CurrentItemHolder.GetInterface(),
-					                               sender->GetHeldItem());
-				}
+			}
+			else
+			{
+				ItemHelper::AddItemToNewHolder(CurrentItemHolder.GetInterface(),
+				                               payload);
 			}
 
-
-			sender->DragFinished();
+			UItemWidget::DragFinished();
 			handled = true;
 		}
 	}
-
 
 	return handled;
 }
@@ -166,6 +161,19 @@ UItemHolderWidget::UItemHolderWidget(const FObjectInitializer& ObjectInitializer
 	Visibility = ESlateVisibility::SelfHitTestInvisible;
 }
 
+void UItemHolderWidget::OnItemDroped(UItemWidget* Reciver, UItem* Payload)
+{
+	if (Payload->GetHolder() != CurrentItemHolder.GetInterface())
+	{
+		if (Reciver->GetHeldItem())
+		{
+			ItemHelper::AddItemToNewHolder(Payload->GetHolder(), Reciver->GetHeldItem());
+		}
+
+		ItemHelper::AddItemToNewHolder(CurrentItemHolder.GetInterface(), Payload);
+	}
+}
+
 void UItemHolderWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -181,6 +189,7 @@ void UItemHolderWidget::NativeConstruct()
 		ItemWidgets.Add(item);
 		ItemsPanel->AddChild(item);
 		item->SetVisibility(ESlateVisibility::Hidden);
+		item->OnItemDrop.AddDynamic(this, &UItemHolderWidget::OnItemDroped);
 	}
 
 	ButtonsPanel->ClearChildren();

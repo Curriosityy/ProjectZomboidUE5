@@ -44,13 +44,21 @@ class CLICKER2_API UEquipmentUserWidget : public UUserWidget
 	UFUNCTION()
 	void DoubleHandWearTest(TScriptInterface<IItemHolder> ItemHolder);
 
-public:
-	void Unsubscribe(UInventoryComponent* Object);
+	void Unsubscribe(UEquippedItem* itemHolder, UItemWidget* widget);
 
+	void Subscribe(UEquippedItem* itemHolder, UItemWidget* itemWidget);
+
+	void Unsubscribe(UInventoryComponent* Object);
 
 	void Subscribe(UInventoryComponent* Object);
 
-	void Setup(UInventoryComponent* InventoryComponent);
+	UFUNCTION()
+	void OnItemDrop(UItemWidget* Reciver, UItem* Payload);
 
 	virtual void NativeOnInitialized() override;
+
+public:
+	IItemHolder* GetItemHolderBasedOnItemWidget(UItemWidget* Reciver);
+
+	void Setup(UInventoryComponent* InventoryComponent);
 };

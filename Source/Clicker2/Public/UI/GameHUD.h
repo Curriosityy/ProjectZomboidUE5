@@ -60,5 +60,5 @@ public:
 
 	bool IsMouseOverBlockUI();
 
-	void MoveItemBetweenInventoryAndScavengeItemHolders(IItemHolder* CurrentItemHolder, UItem* ItemToMove);
+	void MoveItemBetweenInventoryAndScavengeItemHolders(UItem* ItemToMove);
 };

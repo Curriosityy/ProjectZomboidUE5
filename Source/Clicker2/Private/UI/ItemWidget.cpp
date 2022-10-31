@@ -19,11 +19,6 @@ TObjectPtr<UItem> UItemWidget::GetHeldItem() const
 	return HeldItem;
 }
 
-IItemHolder* UItemWidget::GetItemHolder()
-{
-	return ItemHolder.GetInterface();
-}
-
 void UItemWidget::SetItem(IItemHolder* itemHolder)
 {
 	UItem* item = nullptr;
@@ -37,8 +32,6 @@ void UItemWidget::SetItem(IItemHolder* itemHolder)
 			item = items[Index];
 		}
 	}
-
-	ItemHolder = itemHolder->_getUObject();
 
 	if (item == nullptr)
 	{
@@ -118,15 +111,14 @@ FReply UItemWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const F
 	{
 		if (InMouseEvent.GetEffectingButton() == EKeys::RightMouseButton)
 		{
-			HeldItem->Use(GetOwningPlayer()->GetPawn<AClicker2Character>(), ItemHolder.GetInterface());
+			HeldItem->Use(GetOwningPlayer()->GetPawn<AClicker2Character>());
 		}
 		else if (InMouseEvent.GetEffectingButton() == EKeys::LeftMouseButton)
 		{
 			if (GetOwningPlayer()->IsInputKeyDown(EKeys::LeftShift) || GetOwningPlayer()->IsInputKeyDown(
 				EKeys::RightShift))
 			{
-				Cast<AGameHUD>(GetOwningPlayer()->GetHUD())->MoveItemBetweenInventoryAndScavengeItemHolders(
-					ItemHolder.GetInterface(), HeldItem);
+				Cast<AGameHUD>(GetOwningPlayer()->GetHUD())->MoveItemBetweenInventoryAndScavengeItemHolders(HeldItem);
 			}
 			else
 			{
@@ -149,7 +141,7 @@ void UItemWidget::NativeOnDragDetected(const FGeometry& InGeometry, const FPoint
 		OutOperation = NewObject<UDragDropOperation>();
 	}
 
-	OutOperation->Payload = this;
+	OutOperation->Payload = HeldItem;
 	auto image = NewObject<UImage>();
 	image->SetVisibility(ESlateVisibility::HitTestInvisible);
 	image->SetBrush(ItemIcon->Brush);
@@ -170,21 +162,9 @@ bool UItemWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent
 
 	if (!handled)
 	{
-		if (auto payload = static_cast<UItemWidget*>(InOperation->Payload))
+		if (auto payload = static_cast<UItem*>(InOperation->Payload))
 		{
-			if (payload->ItemHolder && payload->HeldItem)
-			{
-				if (payload->ItemHolder == ItemHolder)
-				{
-					PRINT_DEBUG("UItemWidget::NativeOnDrop");
-					//ItemHolder->Move(sender->Index, Index);
-					handled = true;
-				}
-				else
-				{
-					ItemHelper::AddItemToNewHolder(payload->GetItemHolder(), GetItemHolder(), payload->GetHeldItem());
-				}
-			}
+			OnItemDrop.Broadcast(this, payload);
 		}
 
 		DragFinished();
@@ -200,7 +180,6 @@ void UItemWidget::SetVisibility(ESlateVisibility InVisibility)
 	if (InVisibility == ESlateVisibility::Hidden)
 	{
 		HeldItem = nullptr;
-		ItemHolder = nullptr;
 	}
 }
 

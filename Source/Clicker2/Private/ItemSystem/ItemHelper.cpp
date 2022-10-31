@@ -2,9 +2,11 @@
 #include "ItemSystem\Item.h"
 #include "ItemSystem\ItemHolder.h"
 
-bool ItemHelper::AddItemToNewHolder(IItemHolder* OldHolder, IItemHolder* NewHolder, UItem* Item)
+bool ItemHelper::AddItemToNewHolder(IItemHolder* NewHolder, UItem* Item)
 {
-	if (OldHolder->RemoveItem(Item))
+	IItemHolder* oldHolder = Item->GetHolder();
+
+	if (oldHolder && NewHolder->CanAddItem(Item) && oldHolder->RemoveItem(Item))
 	{
 		if (NewHolder->AddItem(Item))
 		{
@@ -12,6 +14,8 @@ bool ItemHelper::AddItemToNewHolder(IItemHolder* OldHolder, IItemHolder* NewHold
 
 			return true;
 		}
+
+		oldHolder->AddItem(Item);
 	}
 
 	return false;

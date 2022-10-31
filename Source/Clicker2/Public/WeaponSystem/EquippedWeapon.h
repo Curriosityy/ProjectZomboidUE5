@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "WeaponItemData.h"
 #include "ItemSystem\EquippedItem.h"
 #include "EquippedWeapon.generated.h"
 class UWeaponAttackComponent;
@@ -37,6 +38,10 @@ public:
 	void Initialize(EItemType itemType, FName Socket, USkeletalMeshComponent* playerMesh, UEquippedWeapon* secondHand,
 	                bool isMainHand);
 
+	void SpawnItemAtSocketPlace(UItem* item);
+
+
+	void AddWeaponComponent(UWeaponItemData* weapon);
 
 	virtual bool AddItem(UItem* item) override;
 

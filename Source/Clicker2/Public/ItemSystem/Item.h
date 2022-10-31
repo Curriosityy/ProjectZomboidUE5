@@ -12,6 +12,8 @@ enum class EItemType : uint8;
 /**
  * 
  */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnItemHolderChanged, UItem*, Item);
+
 UCLASS(DefaultToInstanced, NotPlaceable, NotBlueprintable, Transient)
 class CLICKER2_API UItem : public UObject
 {
@@ -27,13 +29,15 @@ class CLICKER2_API UItem : public UObject
 	TScriptInterface<IItemHolder> Holder;
 
 public:
+	FOnItemHolderChanged ItemHolderChanged;
+
 	void SetNewOwner(IItemHolder* NewOwner);
 
 	IItemHolder* GetHolder() const;
 
 	void Setup(UItemData* itemData);
 
-	void Use(AClicker2Character* user, IItemHolder* ItemHolder);
+	void Use(AClicker2Character* user);
 
 	UItemData* GetItemData();
 
