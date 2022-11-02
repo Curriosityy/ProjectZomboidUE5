@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/Widget.h"
+#include "Components\Widget.h"
 #include "WrappedItemHolderWidget.generated.h"
 
 /**

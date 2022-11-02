@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Player/PlayerMovementComponent.h"
+#include "Player\PlayerMovementComponent.h"
 
 UPlayerMovementComponent::UPlayerMovementComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)

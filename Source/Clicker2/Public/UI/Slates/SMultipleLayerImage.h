@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "MultipleLayerImageAsset.h"
-#include "UI/Slates/SMultipleLayerImage.h"
+#include "UI\Slates\SMultipleLayerImage.h"
 
 /**
  * 
@@ -76,6 +76,7 @@ public:
 protected:
 	// Begin SWidget overrides.
 	virtual FVector2D ComputeDesiredSize(float) const override;
+
 	// End SWidget overrides.
 
 	/** @return an attribute reference of Image */

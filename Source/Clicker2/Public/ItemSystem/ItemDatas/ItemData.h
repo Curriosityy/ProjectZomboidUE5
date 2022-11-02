@@ -22,20 +22,21 @@ enum class EItemType: uint8
 	Others = 1 << 7,
 	All = (1 << 8) - 1,
 };
+
 ENUM_CLASS_FLAGS(EItemType);
 
 /**
  * 
  */
 
-UCLASS(NotPlaceable,Abstract)
+UCLASS(NotPlaceable, Abstract)
 class CLICKER2_API UItemData : public UDataAsset
 {
 	GENERATED_BODY()
-	
+
 	UPROPERTY(EditDefaultsOnly, Category="Item")
 	FGuid ID;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category="Item")
 	FText ItemName;
 
@@ -50,7 +51,7 @@ class CLICKER2_API UItemData : public UDataAsset
 
 	UPROPERTY(EditDefaultsOnly, Category="Model")
 	TObjectPtr<UStreamableRenderAsset> ItemInWorld;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category="Model")
 	bool bIsStaticMesh;
 
@@ -68,17 +69,22 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Item")
 	EItemType ItemType;
 
-public:	
+public:
 	FGuid GetID() const;
+
 	FText GetItemName() const;
+
 	FText GetItemDescription() const;
+
 	bool IsStackable() const;
+
 	UTexture2D* GetItemThumbnail() const;
+
 	UStreamableRenderAsset* GetItemInWorld() const;
-	
+
 	TArray<TSubclassOf<UItemUsability>> GetItemUsabilities();
+
 	EItemType GetItemType() const;
+
 	float GetWeight();
 };
-
-

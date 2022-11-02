@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Widgets/SCompoundWidget.h"
-#include "Widgets/Layout/SConstraintCanvas.h"
+#include "Widgets\SCompoundWidget.h"
+#include "Widgets\Layout\SConstraintCanvas.h"
 
 class AGameHUD;
 
@@ -19,7 +19,9 @@ public:
 		}
 
 		SLATE_ARGUMENT(TWeakObjectPtr<AGameHUD>, OwningHud)
+
 		SLATE_ARGUMENT(SConstraintCanvas::FSlot*, SlotToMove)
+
 	SLATE_END_ARGS()
 
 	/** Constructs this widget with InArgs */

@@ -3,13 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/Button.h"
+#include "Components\Button.h"
 #include "ButtonBroadcastSelf.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnButtonClickedEventSelf,UButton*,Sender);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnButtonPressedEventSelf,UButton*,Sender);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnButtonReleasedEventSelf,UButton*,Sender);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnButtonHoverEventSelf,UButton*,Sender);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnButtonClickedEventSelf, UButton*, Sender);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnButtonPressedEventSelf, UButton*, Sender);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnButtonReleasedEventSelf, UButton*, Sender);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnButtonHoverEventSelf, UButton*, Sender);
 
 /**
  * 
@@ -18,6 +21,7 @@ UCLASS()
 class CLICKER2_API UButtonBroadcastSelf : public UButton
 {
 	GENERATED_BODY()
+
 public:
 	UButtonBroadcastSelf();
 
@@ -29,11 +33,13 @@ public:
 private:
 	UFUNCTION()
 	void OnClickedSelfBroadcast();
+
 	UFUNCTION()
 	void OnPressedSelfBroadcast();
+
 	UFUNCTION()
 	void OnReleasedSelfBroadcast();
+
 	UFUNCTION()
 	void OnHoveredSelfBroadcast();
-	
 };

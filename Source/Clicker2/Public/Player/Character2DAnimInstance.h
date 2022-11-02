@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Animation/AnimInstance.h"
+#include "Animation\AnimInstance.h"
 #include "Character2DAnimInstance.generated.h"
 
 class AClicker2Character;
@@ -19,8 +19,11 @@ public:
 	UCharacter2DAnimInstance();
 
 	virtual void NativeBeginPlay() override;
+
 	virtual void NativeInitializeAnimation() override;
+
 	void UpdateAnimationValues();
+
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 protected:

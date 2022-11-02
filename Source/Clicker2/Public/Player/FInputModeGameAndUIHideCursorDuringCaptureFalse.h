@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "GameFramework/PlayerController.h"
+#include "GameFramework\PlayerController.h"
 
 struct FInputModeGameAndUIHideCursorDuringCaptureFalse : FInputModeGameAndUI
 {

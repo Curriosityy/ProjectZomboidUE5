@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework\CharacterMovementComponent.h"
 #include "PlayerMovementComponent.generated.h"
 
 /** Movement modes for Characters. */
@@ -39,5 +39,6 @@ protected:
 
 public:
 	virtual float GetMaxSpeed() const override;
+
 	virtual void SetMovementMode(EMovementMode NewMovementMode, uint8 NewCustomMode) override;
 };

@@ -124,9 +124,7 @@ void UQuickEquipUserWidget::NativeConstruct()
 
 void UQuickEquipUserWidget::QuickUse(int id, AClicker2Character* character)
 {
-	TObjectPtr<UItem> item = QuickEquipItemWidgets[id]->GetHeldItem();
-
-	if (item)
+	if (TObjectPtr<UItem> item = QuickEquipItemWidgets[id]->GetHeldItem())
 	{
 		item->Use(character);
 	}

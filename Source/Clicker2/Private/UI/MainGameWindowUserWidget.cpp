@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UI/MainGameWindowUserWidget.h"
+#include "UI\MainGameWindowUserWidget.h"
 
-#include "Components/Button.h"
-#include "UI/DragWindowUserWidget.h"
+#include "Components\Button.h"
+#include "UI\DragWindowUserWidget.h"
 
 void UMainGameWindowUserWidget::NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
@@ -19,19 +19,21 @@ void UMainGameWindowUserWidget::NativeOnMouseLeave(const FPointerEvent& InMouseE
 }
 
 void UMainGameWindowUserWidget::NativeOnDragEnter(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
-	UDragDropOperation* InOperation)
+                                                  UDragDropOperation* InOperation)
 {
 	bMouseOver = true;
 	Super::NativeOnDragEnter(InGeometry, InDragDropEvent, InOperation);
 }
 
-void UMainGameWindowUserWidget::NativeOnDragLeave(const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
+void UMainGameWindowUserWidget::NativeOnDragLeave(const FDragDropEvent& InDragDropEvent,
+                                                  UDragDropOperation* InOperation)
 {
 	bMouseOver = false;
 	Super::NativeOnDragLeave(InDragDropEvent, InOperation);
 }
 
-FReply UMainGameWindowUserWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+FReply UMainGameWindowUserWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry,
+                                                          const FPointerEvent& InMouseEvent)
 {
 	//Do not pass to Game input controller
 	return Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent).Handled();

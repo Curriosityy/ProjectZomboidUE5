@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Widgets/SCompoundWidget.h"
+#include "Widgets\SCompoundWidget.h"
 
 /**
  * 
@@ -16,6 +16,7 @@ public:
 		}
 
 		SLATE_ARGUMENT(TWeakObjectPtr<class AGameHUD>, OwningHud)
+
 	SLATE_END_ARGS()
 
 	/** Constructs this widget with InArgs */

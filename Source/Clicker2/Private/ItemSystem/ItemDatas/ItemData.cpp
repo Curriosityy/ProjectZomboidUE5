@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "ItemSystem/ItemDatas/ItemData.h"
+#include "ItemSystem\ItemDatas\ItemData.h"
 
 
 bool UItemData::IsStaticMesh() const
@@ -53,6 +53,3 @@ float UItemData::GetWeight()
 {
 	return Weight;
 }
-
-
-

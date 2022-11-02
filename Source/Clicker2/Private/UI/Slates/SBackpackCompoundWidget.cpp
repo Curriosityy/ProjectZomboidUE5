@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UI/Slates/SBackpackCompoundWidget.h"
+#include "UI\Slates\SBackpackCompoundWidget.h"
 
 #include "SlateOptMacros.h"
-#include "UI/Slates/SItemHolderCompoundWidget.h"
-#include "Widgets/SCanvas.h"
-#include "Widgets/Layout/SConstraintCanvas.h"
+#include "UI\Slates\SItemHolderCompoundWidget.h"
+#include "Widgets\SCanvas.h"
+#include "Widgets\Layout\SConstraintCanvas.h"
 
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 

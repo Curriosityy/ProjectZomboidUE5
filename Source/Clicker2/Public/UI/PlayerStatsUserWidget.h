@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "Blueprint\UserWidget.h"
 #include "PlayerStatsUserWidget.generated.h"
 
 class UTextBlock;
@@ -14,22 +14,22 @@ UCLASS()
 class CLICKER2_API UPlayerStatsUserWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> Nickname;
-	
+
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> Strength;
-	
+
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> Agility;
-	
+
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> MeleeAim;
-	
+
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> RifleAim;
-	
+
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<UTextBlock> Maintenance;
 
@@ -45,5 +45,4 @@ class CLICKER2_API UPlayerStatsUserWidget : public UUserWidget
 public:
 	//TODO:
 	//void Setup(UActorComponent* statsComp);
-	
 };

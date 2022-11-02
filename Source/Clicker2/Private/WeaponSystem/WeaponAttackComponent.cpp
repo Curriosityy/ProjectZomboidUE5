@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "WeaponSystem/WeaponAttackComponent.h"
-#include "Player/Clicker2Character.h"
+#include "WeaponSystem\WeaponAttackComponent.h"
+#include "Player\Clicker2Character.h"
 
 // Sets default values for this component's properties
 UWeaponAttackComponent::UWeaponAttackComponent()
@@ -21,5 +21,3 @@ void UWeaponAttackComponent::BeginPlay()
 	Super::BeginPlay();
 	Owner = GetOwner<AClicker2Character>();
 }
-
-

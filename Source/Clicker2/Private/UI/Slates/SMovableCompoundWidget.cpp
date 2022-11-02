@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "UI/Slates/SMovableCompoundWidget.h"
+#include "UI\Slates\SMovableCompoundWidget.h"
 #include "SlateOptMacros.h"
-#include "Blueprint/WidgetLayoutLibrary.h"
-#include "UI/GameHUD.h"
-#include "Widgets/Layout/SConstraintCanvas.h"
+#include "Blueprint\WidgetLayoutLibrary.h"
+#include "UI\GameHUD.h"
+#include "Widgets\Layout\SConstraintCanvas.h"
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 
 void SMovableCompoundWidget::Construct(const FArguments& InArgs)

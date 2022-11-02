@@ -38,7 +38,7 @@ void ULineOfSightComponent::GenerateEndPointsList(TArray<FVector>* Array, float 
                                                   FVector RotateFromVector, int Ticks, float RayDistance)
 {
 	FVector impactPoint, endRotation, endPosition, position;
-	position = GetOwner<AClicker2Character>()->GetMesh()->GetSocketLocation(TEXT("HeadSeeSocket"));
+	position = GetOwner<AClicker2Character>()->GetMesh()->GetSocketLocation(TEXT("HeadSocket"));
 	FHitResult result;
 	FCollisionQueryParams Params = FCollisionQueryParams::DefaultQueryParam;
 	Params.AddIgnoredActor(GetOwner());

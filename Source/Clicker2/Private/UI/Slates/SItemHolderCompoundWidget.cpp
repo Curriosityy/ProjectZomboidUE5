@@ -1,16 +1,16 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UI/Slates/SItemHolderCompoundWidget.h"
+#include "UI\Slates\SItemHolderCompoundWidget.h"
 
 #include "SlateOptMacros.h"
-#include "Blueprint/WidgetLayoutLibrary.h"
-#include "Player/FInputModeGameAndUIHideCursorDuringCaptureFalse.h"
-#include "UI/GameHUD.h"
-#include "UI/Slates/SMovableCompoundWidget.h"
-#include "Widgets/SCanvas.h"
-#include "Widgets/Layout/SUniformGridPanel.h"
-#include "Widgets/Images/SImage.h"
+#include "Blueprint\WidgetLayoutLibrary.h"
+#include "Player\FInputModeGameAndUIHideCursorDuringCaptureFalse.h"
+#include "UI\GameHUD.h"
+#include "UI\Slates\SMovableCompoundWidget.h"
+#include "Widgets\SCanvas.h"
+#include "Widgets\Images\SImage.h"
+#include "Widgets\Layout\SUniformGridPanel.h"
 
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 
