@@ -13,12 +13,13 @@ class UTextBlock;
 class UItem;
 class UTexture2D;
 class UDragDropOperation;
+class UItemDragDropOperation;
 /**
  *
  * 
  */
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnItemDrop, UItemWidget*, reciver, UItem*, payload);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FItemWidgetEvent, UItemWidget*, Sender, UItemDragDropOperation*, Payload);
 
 UCLASS()
 class CLICKER2_API UItemWidget : public UUserWidget
@@ -36,6 +37,9 @@ protected:
 	TObjectPtr<UTextBlock> CountText;
 
 	UPROPERTY(EditAnywhere)
+	TSubclassOf<UItemDragDropOperation> DragNDropOperation;
+
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<UTexture2D> EmptySlot;
 
 	UPROPERTY(Transient, NonTransactional)
@@ -44,7 +48,8 @@ protected:
 public:
 	TObjectPtr<UItem> GetHeldItem() const;
 
-	FOnItemDrop OnItemDrop;
+	FItemWidgetEvent OnItemDrop;
+	FItemWidgetEvent OnStartDrag;
 
 protected:
 	int Index;
@@ -61,7 +66,7 @@ public:
 
 	void SetCount(int count, bool ForceToShow);
 
-	void Init(int index);
+	void SetItemIndex(int index);
 
 	static bool IsDragged() { return sIsDragged; };
 

@@ -13,6 +13,7 @@
 #include "ItemSystem\ItemDatas\ItemData.h"
 #include "Player\Clicker2Character.h"
 #include "UI\GameHUD.h"
+#include "UI\ItemDragDropOperation.h"
 
 TObjectPtr<UItem> UItemWidget::GetHeldItem() const
 {
@@ -101,7 +102,7 @@ void UItemWidget::SetCount(int count, bool ForceToShow = false)
 	}
 }
 
-void UItemWidget::Init(int index)
+void UItemWidget::SetItemIndex(int index)
 {
 	this->Index = index;
 }
@@ -150,17 +151,17 @@ void UItemWidget::NativeOnDragDetected(const FGeometry& InGeometry, const FPoint
 {
 	Super::NativeOnDragDetected(InGeometry, InMouseEvent, OutOperation);
 
-	if (!OutOperation)
-	{
-		OutOperation = NewObject<UDragDropOperation>();
-	}
+	UItemDragDropOperation* outOperation = NewObject<UItemDragDropOperation>(this, DragNDropOperation);
+	OutOperation = outOperation;
 
-	OutOperation->Payload = HeldItem;
+
+	outOperation->Payload = HeldItem;
 	auto image = NewObject<UImage>();
 	image->SetVisibility(ESlateVisibility::HitTestInvisible);
 	image->SetBrush(ItemIcon->Brush);
-	OutOperation->DefaultDragVisual = image;
+	outOperation->DefaultDragVisual = image;
 	sIsDragged = true;
+	OnStartDrag.Broadcast(this, outOperation);
 }
 
 void UItemWidget::NativeOnDragCancelled(const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
@@ -176,9 +177,12 @@ bool UItemWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent
 
 	if (!handled)
 	{
-		if (auto payload = static_cast<UItem*>(InOperation->Payload))
+		if (UItemDragDropOperation* operation = Cast<UItemDragDropOperation>(InOperation))
 		{
-			OnItemDrop.Broadcast(this, payload);
+			if (auto payload = static_cast<UItem*>(InOperation->Payload))
+			{
+				OnItemDrop.Broadcast(this, operation);
+			}
 		}
 
 		DragFinished();

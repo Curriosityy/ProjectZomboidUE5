@@ -8,6 +8,7 @@
 #include "QuickEquipUserWidget.generated.h"
 
 class UHorizontalBox;
+class UItemDragDropOperation;
 /**
  * 
  */
@@ -42,10 +43,18 @@ class CLICKER2_API UQuickEquipUserWidget : public UUserWidget
 	void RemoveQuickItem(UItem* Item);
 
 	UFUNCTION()
-	void OnItemDroped(UItemWidget* Reciver, UItem* Payload);
+	void OnItemDroped(UItemWidget* Reciver, UItemDragDropOperation* Payload);
+
+	UFUNCTION()
+	void RemoveQuickItem(UDragDropOperation* Operation);
+
+	UFUNCTION()
+	void OnStartDrag(UItemWidget* Sender, UItemDragDropOperation* Payload);
 
 	virtual void NativeConstruct() override;
 
 public:
 	void QuickUse(int id, AClicker2Character* character);
+
+	inline static FString DragTag = "QuickEquipBar";
 };

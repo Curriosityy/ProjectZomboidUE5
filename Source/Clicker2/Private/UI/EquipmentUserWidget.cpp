@@ -29,11 +29,17 @@ void UEquipmentUserWidget::DoubleHandWearTest(TScriptInterface<IItemHolder> Item
 	LeftHand->SetVisibility(visibility);
 }
 
-void UEquipmentUserWidget::OnItemDrop(UItemWidget* Reciver, UItem* Payload)
+void UEquipmentUserWidget::OnItemDrop(UItemWidget* Reciver, UItemDragDropOperation* Payload)
 {
+	if (Payload->bIsDragFromQuickWidget)
+	{
+		return;
+	}
+
+	UItem* item = Payload->GetItemPayload();
 	IItemHolder* reciverHolder = GetItemHolderBasedOnItemWidget(Reciver);
 
-	if (UWeaponItemData* weapon = Cast<UWeaponItemData>(Payload->GetItemData()))
+	if (UWeaponItemData* weapon = Cast<UWeaponItemData>(item->GetItemData()))
 	{
 		if (reciverHolder == CurrentInventoryComponent->GetLeftHand() ||
 			reciverHolder == CurrentInventoryComponent->GetRightHand())
@@ -43,7 +49,7 @@ void UEquipmentUserWidget::OnItemDrop(UItemWidget* Reciver, UItem* Payload)
 	}
 
 
-	ItemHelper::AddItemToNewHolder(reciverHolder, Payload);
+	ItemHelper::AddItemToNewHolder(reciverHolder, item);
 }
 
 void UEquipmentUserWidget::Unsubscribe(UEquippedItem* itemHolder, UItemWidget* widget)
@@ -115,13 +121,13 @@ void UEquipmentUserWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
-	Head->Init(0);
-	Backpack->Init(0);
-	RightHand->Init(0);
-	LeftHand->Init(0);
-	Chest->Init(0);
-	Legs->Init(0);
-	Boots->Init(0);
+	Head->SetItemIndex(0);
+	Backpack->SetItemIndex(0);
+	RightHand->SetItemIndex(0);
+	LeftHand->SetItemIndex(0);
+	Chest->SetItemIndex(0);
+	Legs->SetItemIndex(0);
+	Boots->SetItemIndex(0);
 }
 
 IItemHolder* UEquipmentUserWidget::GetItemHolderBasedOnItemWidget(UItemWidget* Reciver)

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ItemDragDropOperation.h"
 #include "Blueprint\UserWidget.h"
 #include "ItemSystem\EquippedItem.h"
 #include "EquipmentUserWidget.generated.h"
@@ -53,7 +54,7 @@ class CLICKER2_API UEquipmentUserWidget : public UUserWidget
 	void Subscribe(UInventoryComponent* Object);
 
 	UFUNCTION()
-	void OnItemDrop(UItemWidget* Reciver, UItem* Payload);
+	void OnItemDrop(UItemWidget* Reciver, UItemDragDropOperation* Payload);
 
 	virtual void NativeOnInitialized() override;
 

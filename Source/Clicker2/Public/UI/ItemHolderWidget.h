@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ItemDragDropOperation.h"
 #include "Blueprint\UserWidget.h"
 #include "ItemHolderWidget.generated.h"
 
@@ -73,7 +74,7 @@ public:
 
 	UFUNCTION()
 
-	void OnItemDroped(UItemWidget* Reciver, UItem* Payload);
+	void OnItemDropped(UItemWidget* Reciver, UItemDragDropOperation* Payload);
 
 	virtual void NativeConstruct() override;
 

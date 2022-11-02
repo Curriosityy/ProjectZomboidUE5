@@ -3,12 +3,15 @@
 
 #include "UI\QuickEquipUserWidget.h"
 
+#include "Blueprint\DragDropOperation.h"
 #include "Components\HorizontalBox.h"
 #include "ItemSystem\BasicItemContainer.h"
 #include "ItemSystem\InventoryComponent.h"
 #include "ItemSystem\ItemHelper.h"
 #include "Player\Clicker2Character.h"
+#include "UI\ItemDragDropOperation.h"
 #include "UI\ItemWidget.h"
+
 
 void UQuickEquipUserWidget::NativePreConstruct()
 {
@@ -55,18 +58,20 @@ void UQuickEquipUserWidget::RemoveQuickItem(UItem* Item)
 	Item->OnItemHolderChanged.RemoveDynamic(this, &UQuickEquipUserWidget::OnQuickItemItemHolderChanged);
 }
 
-void UQuickEquipUserWidget::OnItemDroped(UItemWidget* Reciver, UItem* Payload)
+void UQuickEquipUserWidget::OnItemDroped(UItemWidget* Reciver, UItemDragDropOperation* Payload)
 {
 	bool isReadyToAdd = true;
 
-	if (!ItemHelper::IsInventoryItemHolder(Owner, Payload->GetHolder()))
+	UItem* item = Payload->GetItemPayload();
+
+	if (!ItemHelper::IsInventoryItemHolder(Owner, item->GetHolder()))
 	{
-		isReadyToAdd = ItemHelper::AddItemToNewHolder(Owner->GetInventoryComponent()->GetHeldItems(), Payload);
+		isReadyToAdd = ItemHelper::AddItemToNewHolder(Owner->GetInventoryComponent()->GetHeldItems(), item);
 	}
 
 	if (isReadyToAdd)
 	{
-		if (FindItemWidget(Payload))
+		if (FindItemWidget(item))
 		{
 			RemoveQuickItem(Payload);
 		}
@@ -76,9 +81,23 @@ void UQuickEquipUserWidget::OnItemDroped(UItemWidget* Reciver, UItem* Payload)
 			RemoveQuickItem(Reciver->GetHeldItem());
 		}
 
-		Reciver->SetItem(Payload);
-		Payload->OnItemHolderChanged.AddDynamic(this, &UQuickEquipUserWidget::OnQuickItemItemHolderChanged);
+		Reciver->SetItem(item);
+		item->OnItemHolderChanged.AddDynamic(this, &UQuickEquipUserWidget::OnQuickItemItemHolderChanged);
 	}
+}
+
+void UQuickEquipUserWidget::RemoveQuickItem(UDragDropOperation* Operation)
+{
+	if (UItem* payload = Cast<UItem>(Operation->Payload))
+	{
+		RemoveQuickItem(payload);
+	}
+}
+
+void UQuickEquipUserWidget::OnStartDrag(UItemWidget* Sender, UItemDragDropOperation* Payload)
+{
+	Payload->bIsDragFromQuickWidget = true;
+	Payload->OnDragCancelled.AddDynamic(this, &UQuickEquipUserWidget::RemoveQuickItem);
 }
 
 void UQuickEquipUserWidget::NativeConstruct()
@@ -98,6 +117,7 @@ void UQuickEquipUserWidget::NativeConstruct()
 			item->SetCount(i + 1, true);
 			item->SetVisibility(ESlateVisibility::Visible);
 			item->OnItemDrop.AddDynamic(this, &UQuickEquipUserWidget::OnItemDroped);
+			item->OnStartDrag.AddDynamic(this, &UQuickEquipUserWidget::OnStartDrag);
 		}
 	}
 }

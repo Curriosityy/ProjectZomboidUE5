@@ -12,6 +12,7 @@
 #include "ItemSystem\ItemHelper.h"
 #include "ItemSystem\ItemHolder.h"
 #include "UI\ButtonBroadcastSelf.h"
+#include "UI\ItemDragDropOperation.h"
 #include "UI\ItemWidget.h"
 
 void UItemHolderWidget::NativePreConstruct()
@@ -115,19 +116,25 @@ bool UItemHolderWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDro
 
 	if (!handled)
 	{
-		if (auto payload = Cast<UItem>(InOperation->Payload))
+		if (UItemDragDropOperation* operation = Cast<UItemDragDropOperation>(InOperation))
 		{
-			if (payload->GetHolder() == CurrentItemHolder.GetInterface())
+			if (!operation->bIsDragFromQuickWidget)
 			{
-			}
-			else
-			{
-				ItemHelper::AddItemToNewHolder(CurrentItemHolder.GetInterface(),
-				                               payload);
-			}
+				if (auto payload = Cast<UItem>(InOperation->Payload))
+				{
+					if (payload->GetHolder() == CurrentItemHolder.GetInterface())
+					{
+					}
+					else
+					{
+						ItemHelper::AddItemToNewHolder(CurrentItemHolder.GetInterface(),
+						                               payload);
+					}
 
-			UItemWidget::DragFinished();
-			handled = true;
+					UItemWidget::DragFinished();
+					handled = true;
+				}
+			}
 		}
 	}
 
@@ -158,16 +165,22 @@ UItemHolderWidget::UItemHolderWidget(const FObjectInitializer& ObjectInitializer
 	Visibility = ESlateVisibility::SelfHitTestInvisible;
 }
 
-void UItemHolderWidget::OnItemDroped(UItemWidget* Reciver, UItem* Payload)
+void UItemHolderWidget::OnItemDropped(UItemWidget* Reciver, UItemDragDropOperation* Payload)
 {
-	if (Payload->GetHolder() != CurrentItemHolder.GetInterface())
+	if (Payload->bIsDragFromQuickWidget)
+	{
+		return;
+	}
+
+	UItem* item = Payload->GetItemPayload();
+	if (item->GetHolder() != CurrentItemHolder.GetInterface())
 	{
 		if (Reciver->GetHeldItem())
 		{
-			ItemHelper::AddItemToNewHolder(Payload->GetHolder(), Reciver->GetHeldItem());
+			ItemHelper::AddItemToNewHolder(item->GetHolder(), Reciver->GetHeldItem());
 		}
 
-		ItemHelper::AddItemToNewHolder(CurrentItemHolder.GetInterface(), Payload);
+		ItemHelper::AddItemToNewHolder(CurrentItemHolder.GetInterface(), item);
 	}
 }
 
@@ -182,11 +195,11 @@ void UItemHolderWidget::NativeConstruct()
 	for (int i = 0; i < ItemsOnPage; i++)
 	{
 		item = NewObject<UItemWidget>(this, ItemWidget);
-		item->Init(i);
+		item->SetItemIndex(i);
 		ItemWidgets.Add(item);
 		ItemsPanel->AddChild(item);
 		item->SetVisibility(ESlateVisibility::Hidden);
-		item->OnItemDrop.AddDynamic(this, &UItemHolderWidget::OnItemDroped);
+		item->OnItemDrop.AddDynamic(this, &UItemHolderWidget::OnItemDropped);
 	}
 
 	ButtonsPanel->ClearChildren();

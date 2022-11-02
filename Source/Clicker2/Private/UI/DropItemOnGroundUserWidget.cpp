@@ -8,6 +8,7 @@
 #include "ItemSystem\ItemHelper.h"
 #include "ItemSystem\SearchForPickupColliderComponent.h"
 #include "Player\Clicker2Character.h"
+#include "UI\ItemDragDropOperation.h"
 #include "UI\ItemWidget.h"
 
 
@@ -18,15 +19,21 @@ bool UDropItemOnGroundUserWidget::NativeOnDrop(const FGeometry& InGeometry, cons
 
 	if (!handled)
 	{
-		if (UItem* Payload = Cast<UItem>(InOperation->Payload))
+		if (UItemDragDropOperation* operation = Cast<UItemDragDropOperation>(InOperation))
 		{
-			if (Payload->GetHolder() != SearchItemComp)
+			if (!operation->bIsDragFromQuickWidget)
 			{
-				ItemHelper::AddItemToNewHolder(SearchItemComp, Payload);
-			}
+				if (UItem* Payload = Cast<UItem>(InOperation->Payload))
+				{
+					if (Payload->GetHolder() != SearchItemComp)
+					{
+						ItemHelper::AddItemToNewHolder(SearchItemComp, Payload);
+					}
 
-			UItemWidget::DragFinished();
-			handled = true;
+					UItemWidget::DragFinished();
+					handled = true;
+				}
+			}
 		}
 	}
 
